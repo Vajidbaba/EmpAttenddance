@@ -12,6 +12,7 @@ namespace App.Admin.Web.Areas.Admin.Controllers
         {
             TempData["Error" + toastType + " "] = message;
         }
+        
 
 
         protected enum ToastType
