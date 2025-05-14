@@ -1,0 +1,15 @@
+D:\Projects\Progress\Web\Logistics\Common\Common.Core\bin\Release\net6.0\Common.Core.deps.json
+D:\Projects\Progress\Web\Logistics\Common\Common.Core\bin\Release\net6.0\Common.Core.dll
+D:\Projects\Progress\Web\Logistics\Common\Common.Core\bin\Release\net6.0\Common.Core.pdb
+D:\Projects\Progress\Web\Logistics\Common\Common.Core\bin\Release\net6.0\Common.Data.dll
+D:\Projects\Progress\Web\Logistics\Common\Common.Core\bin\Release\net6.0\Common.Data.pdb
+D:\Projects\Progress\Web\Logistics\Common\Common.Core\obj\Release\net6.0\Common.Core.csproj.AssemblyReference.cache
+D:\Projects\Progress\Web\Logistics\Common\Common.Core\obj\Release\net6.0\Common.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\Progress\Web\Logistics\Common\Common.Core\obj\Release\net6.0\Common.Core.AssemblyInfoInputs.cache
+D:\Projects\Progress\Web\Logistics\Common\Common.Core\obj\Release\net6.0\Common.Core.AssemblyInfo.cs
+D:\Projects\Progress\Web\Logistics\Common\Common.Core\obj\Release\net6.0\Common.Core.csproj.CoreCompileInputs.cache
+D:\Projects\Progress\Web\Logistics\Common\Common.Core\obj\Release\net6.0\Common.Core.csproj.CopyComplete
+D:\Projects\Progress\Web\Logistics\Common\Common.Core\obj\Release\net6.0\Common.Core.dll
+D:\Projects\Progress\Web\Logistics\Common\Common.Core\obj\Release\net6.0\refint\Common.Core.dll
+D:\Projects\Progress\Web\Logistics\Common\Common.Core\obj\Release\net6.0\Common.Core.pdb
+D:\Projects\Progress\Web\Logistics\Common\Common.Core\obj\Release\net6.0\ref\Common.Core.dll

@@ -1,0 +1,14 @@
+D:\Projects\Progress\Web\Logistics\Common\Common.Data\bin\Release\net6.0\Common.Data.deps.json
+D:\Projects\Progress\Web\Logistics\Common\Common.Data\bin\Release\net6.0\Common.Data.runtimeconfig.json
+D:\Projects\Progress\Web\Logistics\Common\Common.Data\bin\Release\net6.0\Common.Data.dll
+D:\Projects\Progress\Web\Logistics\Common\Common.Data\bin\Release\net6.0\Common.Data.pdb
+D:\Projects\Progress\Web\Logistics\Common\Common.Data\obj\Release\net6.0\Common.Data.csproj.AssemblyReference.cache
+D:\Projects\Progress\Web\Logistics\Common\Common.Data\obj\Release\net6.0\Common.Data.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\Progress\Web\Logistics\Common\Common.Data\obj\Release\net6.0\Common.Data.AssemblyInfoInputs.cache
+D:\Projects\Progress\Web\Logistics\Common\Common.Data\obj\Release\net6.0\Common.Data.AssemblyInfo.cs
+D:\Projects\Progress\Web\Logistics\Common\Common.Data\obj\Release\net6.0\Common.Data.csproj.CoreCompileInputs.cache
+D:\Projects\Progress\Web\Logistics\Common\Common.Data\obj\Release\net6.0\Common.Data.dll
+D:\Projects\Progress\Web\Logistics\Common\Common.Data\obj\Release\net6.0\refint\Common.Data.dll
+D:\Projects\Progress\Web\Logistics\Common\Common.Data\obj\Release\net6.0\Common.Data.pdb
+D:\Projects\Progress\Web\Logistics\Common\Common.Data\obj\Release\net6.0\Common.Data.genruntimeconfig.cache
+D:\Projects\Progress\Web\Logistics\Common\Common.Data\obj\Release\net6.0\ref\Common.Data.dll
