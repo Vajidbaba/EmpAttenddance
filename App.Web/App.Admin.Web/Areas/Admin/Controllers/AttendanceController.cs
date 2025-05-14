@@ -9,6 +9,7 @@ using static Common.Core.Services.IEmployeeService;
 namespace App.Admin.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+
     public class AttendanceController : BaseController
     {
         private readonly IAttendanceService _attendanceService;
