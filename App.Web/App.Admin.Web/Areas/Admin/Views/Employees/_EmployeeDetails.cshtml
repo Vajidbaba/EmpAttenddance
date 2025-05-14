@@ -1,0 +1,52 @@
+﻿@model EmployeeModel
+<style>
+  strong{
+    font-size:12px;
+  }
+  span{
+        font-size: 12px;
+    }
+</style>
+<div class="card border-1  rounded-2">
+    <div class="card-body">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="d-flex">
+                    <strong class="me-2 text-muted w-50">ID:</strong>
+                    <span>@Model.Id</span>
+                </div>
+                <div class="d-flex">
+                    <strong class="me-2 text-muted w-50">Name:</strong>
+                    <span>@Model.Name</span>
+                </div>
+                <div class="d-flex">
+                    <strong class="me-2 text-muted w-50">Email:</strong>
+                    <span>@Model.Email</span>
+                </div>
+                <div class="d-flex">
+                    <strong class="me-2 text-muted w-50">Contact:</strong>
+                    <span>@Model.Contact</span>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="d-flex">
+                    <strong class="me-2 text-muted w-50">Department:</strong>
+                    <span>@Model.Department</span>
+                </div>
+                <div class="d-flex">
+                    <strong class="me-2 text-muted w-50">Role:</strong>
+                    <span>@Model.Role</span>
+                </div>
+                <div class="d-flex">
+                    <strong class="me-2 text-muted w-50">Salary Type:</strong>
+                    <span>@Model.SalaryType</span>
+                </div>
+                <div class="d-flex">
+                    <strong class="me-2 text-muted w-50">Joining Date:</strong>
+                    <span>@Model.DateOfJoining.ToShortDateString()</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

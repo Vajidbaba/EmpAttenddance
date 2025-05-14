@@ -44,16 +44,55 @@
                                 <td class="p-1 ps-2">@employee.Role</td>
                                 <td class="p-1 ps-2">
                                     <a href="@Url.Action("AddOrUpdate", "Employees", new { Id = employee.Id })" class="btn btn-success btn-sm mb-0 px-3 py-1"><i class="fa  fa-edit"></i></a>
-                                    <a href="@Url.Action("Details", "Employees", new { Id = employee.Id })" class="btn btn-dark btn-sm mb-0 px-3 py-1"><i class="fa  fa-eye"></i></a>
+                                    <a href="javascript:void(0);" class="btn btn-dark btn-sm mb-0 px-3 py-1" onclick="loadDetails(@employee.Id)">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
-
         }
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-end modal-sm w-50" tabindex="-1" id="employeeDetailsCanvas" aria-labelledby="employeeDetailsLabel">
+    <div class="offcanvas-header">
+        <h5 id="employeeDetailsLabel">Employee Details</h5>
+        <button type="button" class="btn btn-dark text-white  btn-icon-only" data-bs-dismiss="offcanvas"> <i class="fa fa-close"></i></button>
+    </div>
+    <div class="offcanvas-body  " id="employeeDetailsContent">
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2">Loading...</p>
+        </div>
 
     </div>
 </div>
 
+@section Scripts {
+    <script>
+           function loadDetails(id) {
+            var offcanvasEl = document.getElementById('employeeDetailsCanvas');
+            var offcanvas = new bootstrap.Offcanvas(offcanvasEl);
+            $('#employeeDetailsContent').html(`
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-2">Loading...</p>
+                </div>
+            `);
+            offcanvas.show();
+            $.ajax({
+                url: '@Url.Content("~/admin/employees/details/")' + id,
+                method: 'GET',
+                success: function (response) {
+                    $('#employeeDetailsContent').html(response);
+                },
+                error: function () {
+                    $('#employeeDetailsContent').html('<p class="text-danger">Failed to load details.</p>');
+                }
+            });
+        }
+    </script>
+}

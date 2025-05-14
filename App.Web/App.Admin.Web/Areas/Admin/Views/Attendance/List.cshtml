@@ -41,30 +41,32 @@
     </div>
 </div>
 
-
-<!-- Modal -->
-<div class="modal fade" id="employeeModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h6 class="modal-title">Attendance Form</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="employeeModalBody">
-                <!-- Partial view will be loaded here -->
-            </div>
+<!-- Details -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="employeeModal" aria-labelledby="employeeDetailsLabel">
+    <div class="offcanvas-header">
+        <h5 id="employeeDetailsLabel">Employee Attendance</h5>
+        <button type="button" class="btn btn-dark text-white btn-icon-only rounded-circle" data-bs-dismiss="offcanvas"> <i class="fa fa-close"></i></button>
+    </div>
+    <div class="offcanvas-body" id="employeeDetailsContent">
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2">Loading...</p>
         </div>
     </div>
 </div>
-
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.datatables.net/2.3.0/js/dataTables.js"></script>
     <script type="text/javascript">
               $(document).ready(function () {
-                 var today = new Date().toISOString().split("T")[0];
-                 $("#StartDate").val(today);
-                 $("#EndDate").val(today);
+                    var today = new Date();
+                    today.setDate(today.getDate());
+                    var tomorrow = new Date(today);
+                    tomorrow.setDate(today.getDate() + 1);
+                    var todayFormatted = today.toISOString().split("T")[0];
+                    var tomorrowFormatted = tomorrow.toISOString().split("T")[0];
+                    $("#StartDate").val(todayFormatted);
+                    $("#EndDate").val(tomorrowFormatted);
                  search();
              });
 
@@ -108,63 +110,64 @@
                      ]
                  });
              }
+             
+            function validation() {
+              var isValidate = true;
+              var today = new Date().toISOString().split("T")[0];
+              $("#Date").attr("min", today);
 
-             // Function to open employee details in modal
-             function openEmployeeModal(id) {
-                 $.ajax({
-                     url: '/admin/attendance/addorupdate?id=' + id,  // ✅ Fixed URL format
-                     type: 'GET',
-                     success: function (result) {
-                         $("#employeeModalBody").html(result); // Load content inside modal
-                         $("#employeeModal").modal('show'); // Show the modal
-                     },
-                     error: function () {
-                         alert("❌ Error fetching employee details.");
-                     }
-                 });
-             }
-          function validation() {
-            var isValidate = true;
-            var today = new Date().toISOString().split("T")[0];
-            $("#Date").attr("min", today);
+              function validateTimes() {
+                  var checkIn = $("#CheckInTime").val();
+                  var checkOut = $("#CheckOutTime").val();
+                  if (checkIn && checkOut && checkOut <= checkIn) {
+                      alert("❌ Check-Out Time must be after Check-In Time!");
+                      $("#CheckOutTime").val("");
+                      isValidate = false;
+                  }
+              }
+              $("#CheckInTime, #CheckOutTime").change(validateTimes);
+              $("form").submit(function (event) {
+                  var checkIn = $("#CheckInTime").val();
+                  var checkOut = $("#CheckOutTime").val();
+                  var date = $("#Date").val();
+                  if (!date) {
+                      alert("❌ Date is required!");
+                      event.preventDefault();
+                      isValidate = false;
+                  }
+                  if (checkIn && checkOut && checkOut <= checkIn) {
+                      alert("❌ Check-Out Time must be after Check-In Time!");
+                      event.preventDefault();
+                      isValidate = false;
+                  }
+              });
+          }
+           function openEmployeeModal(id) {
+            const offcanvas = new bootstrap.Offcanvas(document.getElementById('employeeModal'));
 
-            function validateTimes() {
-                var checkIn = $("#CheckInTime").val();
-                var checkOut = $("#CheckOutTime").val();
-                if (checkIn && checkOut && checkOut <= checkIn) {
-                    alert("❌ Check-Out Time must be after Check-In Time!");
-                    $("#CheckOutTime").val("");
-                    isValidate = false;
-                }
-            }
-            $("#CheckInTime, #CheckOutTime").change(validateTimes);
-            $("form").submit(function (event) {
-                var checkIn = $("#CheckInTime").val();
-                var checkOut = $("#CheckOutTime").val();
-                var date = $("#Date").val();
-                if (!date) {
-                    alert("❌ Date is required!");
-                    event.preventDefault();
-                    isValidate = false;
-                }
-                if (checkIn && checkOut && checkOut <= checkIn) {
-                    alert("❌ Check-Out Time must be after Check-In Time!");
-                    event.preventDefault();
-                    isValidate = false;
+            $("#employeeDetailsContent").html(`
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-2">Loading...</p>
+                </div>
+            `);
+
+            $.ajax({
+                url: '@Url.Content("~/admin/attendance/addorupdate")',
+                type: 'GET',
+                data: { id: id },
+                success: function(result) {
+                    $("#employeeDetailsContent").html(result);
+                    offcanvas.show();
+                },
+                error: function() {
+                    $("#employeeDetailsContent").html('<p class="text-danger">❌ Failed to load details.</p>');
                 }
             });
         }
-
-        $(document).on("click", "#view-details", function () {
-            var id = $(this).data("id");
-            $.ajax({
-                url: '@Url.Content("~/")admin/attendance/addorupdate?Id='+ id,
-                type: 'GET',
-                success: function (result) {
-                    $("#employeeModalBody").html(result);
-                    $("#employeeModal").modal('show');
-                }
-            });
+        $("#view-details").click(function () {
+            var id = $(this).data("id"); 
+            openEmployeeModal(id); 
         });
 
 

@@ -103,8 +103,6 @@ namespace Common.Core.Services
             await _dbcontext.SaveChangesAsync();
             return true;
         }
-
-
         public DataTableResultModel GetDataTable(DataTableModel model)
         {
             var data = GetDataTables(model);
@@ -117,7 +115,6 @@ namespace Common.Core.Services
                 recordsTotal = recordTotal,
                 data = data
             };
-
             return result;
         }
 

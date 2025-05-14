@@ -65,12 +65,15 @@ namespace App.Admin.Web.Areas.Admin.Controllers
             Toast("Please enter all required fields", ToastType.ERROR);
             return View(employee);
         }
-
-        public IActionResult Details(int? Id)
+        [HttpGet]
+        public IActionResult Details(int id)
         {
-            if (Id == null) return NotFound();
-            var employee = _employeeService.GetEmployeeDetails(Id);
-            return employee == null ? NotFound() : View(employee);
+            var employee = _employeeService.GetEmployeeDetails(id);
+            if (employee == null)
+                return NotFound();
+
+            return PartialView("_EmployeeDetails", employee);
         }
+
     }
 }

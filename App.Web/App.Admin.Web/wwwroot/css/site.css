@@ -52,3 +52,23 @@ div:where(.swal2-container) div:where(.swal2-popup) {
 .navbar-vertical.navbar-expand-xs .navbar-collapse {
   height: auto !important;
 }
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: Arial, sans-serif;
+}
+
+thead {
+  background: linear-gradient(to right, #4b6cb7, #182848) !important; /* Gradient color */
+  color: white;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
