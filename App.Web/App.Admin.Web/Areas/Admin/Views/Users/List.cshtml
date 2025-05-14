@@ -1,0 +1,132 @@
+﻿@model IEnumerable<Common.Data.Models.Users>
+
+@{
+    ViewData["Title"] = "Users";
+}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+
+<div class="row mt-3">
+    <div class="col-md-6 ">
+        <h6 class="font-weight-bolder v-color">@ViewData["Title"]</h6>
+    </div>
+    <div class="col-md-6  text-end">
+        <a href="~/Admin/users/add" class="btn btn-sm m-0 btn-success">
+            <i class="fa fa-plus me-2 text-xs"></i>
+            Add New
+        </a>
+    </div>
+</div>
+
+
+<div class="card  rounded-2 mt-2">
+    <div class="card-body p-2">
+        <div class="table-responsive">
+            <table id="users" class="table table-sm table-striped table-hover mb-0 dt-responsive nowrap w-100 small align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th class="text-xs font-weight-bolder ps-4 v-color">Id</th>
+                        <th class="text-xs font-weight-bolder ps-2 v-color">Username</th>
+                        <th class="text-xs font-weight-bolder ps-2 v-color">User Id</th>
+                        <th class="text-xs font-weight-bolder ps-2 v-color">Password</th>
+                        <th class="text-xs font-weight-bolder ps-2 v-color">Role</th>
+                        <th class="text-xs text-center font-weight-bolder ps-4 v-color">Status</th>
+                        <th class="text-xs text-center font-weight-bolder ps-3 v-color">Action</th>
+
+                    </tr>
+                </thead>
+                <tbody class="border-1">
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <p class="text-xs text-primary mb-0 ms-3 font-weight-bolder">
+                                    @Html.DisplayFor(modelItem => item.Id)
+                                </p>
+                            </td>
+                            <td>
+                                <h6 class="mb-0 text-xs">
+                                    @Html.DisplayFor(modelItem => item.Username)
+
+                                </h6>
+                            </td>
+                            <td>
+                                <h6 class="mb-0 text-xs">
+                                    @Html.DisplayFor(modelItem => item.UserId)
+
+                                </h6>
+                            </td>
+                            <td>
+                                <p class="text-xs font-weight-bold mb-0">
+                                    @Html.DisplayFor(modelItem => item.Password)
+
+                                </p>
+                            </td>
+                            <td class="text-sm">
+                                <p class="text-xs font-weight-bold mb-0">
+
+                                    @if (item.Role == "1")
+                                    {
+                                        <span>Admin</span>
+                                    }
+                                    else if (item.Role == "2")
+                                    {
+                                        <span>Client</span>
+
+                                    }
+                                    else if (item.Role == "3")
+                                    {
+                                        <span>Supervisor</span>
+
+                                    }
+                                    else
+                                    {
+                                        <span>User</span>
+                                    }
+                                </p>
+                            </td>
+                            <td class="text-center">
+                                @if (@item.Active == true)
+                                {
+                                    <span class="badge badge-xss px-2 py-1 text-xxs text-capitalize bg-gradient-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-sm text-xxs px-2 py-1 text-capitalize bg-gradient-secondary">InActive</span>
+                                }
+
+                            </td>
+                            <td class="align-middle text-center text-sm">
+                                <a asp-controller="Users" asp-action="Details" asp-route-id="@item.Id" class="badge badge-sm text-capitalize px-2 py-1 bg-gradient-light text-dark">
+                                    <i class="fa fa-eye me-1"></i> Show
+                                </a>
+                                <a asp-controller="Users" asp-action="Update" asp-route-id="@item.Id" class="badge badge-sm text-capitalize px-2 py-1 bg-gradient-dark">
+                                    <i class="fa fa-edit me-1"></i> Edit
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#users').DataTable({
+                responsive: true,
+                paging: true,
+                searching: false,
+                ordering: false,
+                info: true,
+                lengthChange: false,
+                autoWidth: false
+            });
+        });
+</script>
+}

@@ -1,0 +1,11 @@
+﻿<script>
+    var toastMessage = '@TempData["ERROR"]';
+    if (toastMessage != null && toastMessage != '') {
+        Swal.fire('Error', toastMessage, 'error')
+    }
+
+    var toastMessage = '@TempData["SUCCESS"]';
+    if (toastMessage != null && toastMessage != '') {
+        Swal.fire('Success', toastMessage, 'success')
+    }
+</script>

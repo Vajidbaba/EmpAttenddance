@@ -1,0 +1,172 @@
+﻿@model List<Common.Data.Models.AttendanceModel>
+@{
+    ViewData["Title"] = "Attendance";
+}
+<link href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.css" rel="stylesheet" />
+
+<div class="card rounded-2 mt-2">
+    <div class="card-body p-2">
+        <div class="row mb-2">
+            <div class="col-md-3 ">
+                <label for="StartDate">Start Date:</label>
+                <input type="date" id="StartDate" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-3">
+                <label for="EndDate">End Date:</label>
+                <input type="date" id="EndDate" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-6 d-flex align-items-end justify-content-end">
+                <button type="button" class="btn btn-primary btn-sm mb-0" onclick="search()">Search</button>
+                <a id="view-details" class="btn btn-success btn-sm mx-2 mb-0">Add Attendance</a>
+
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table id="attexample" class="table table-sm table-striped table-hover mb-0 dt-responsive nowrap w-100 small align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th class="p-1 ps-2"></th>
+                        <th class="p-1 ps-2">Name</th>
+                        <th class="p-1 ps-2">Date</th>
+                        <th class="p-1 ps-2">Check In</th>
+                        <th class="p-1 ps-2">Check Out</th>
+                        <th class="p-1 ps-2">Work Hours</th>
+                        <th class="p-1 ps-2">Status</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="employeeModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">Attendance Form</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="employeeModalBody">
+                <!-- Partial view will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.3.0/js/dataTables.js"></script>
+    <script type="text/javascript">
+              $(document).ready(function () {
+                 var today = new Date().toISOString().split("T")[0];
+                 $("#StartDate").val(today);
+                 $("#EndDate").val(today);
+                 search();
+             });
+
+             function search() {
+                     if ($.fn.DataTable.isDataTable("#attexample")) {
+                      $("#attexample").DataTable().destroy();
+                  }
+                 $('#attexample').DataTable({
+                     "processing": true,
+                     "serverSide": true,
+                     "bSort": false,
+                     "bInfo": false,
+                     "searching": false,
+                      "dom": 'tp',
+                     "orderable": false,
+                     "ajax": {
+                         "url": '@Url.Content("~/admin/attendance/getattendancedata")',
+                         "type": "POST",
+                         "datatype": "json",
+                         "data": function (d) {
+                            d.id = $("#Id").val();
+                            d.status = $("#Status").val();
+                            d.StartDate = $("#StartDate").val(); 
+                            d.EndDate = $("#EndDate").val(); 
+                         }
+                     },
+                     "columnDefs": [{
+                         targets: [0],
+                         render: function (data, type, row, meta) {
+                             return '<a class="badge badge-sm text-capitalize cursor-pointer px-2 py-1 bg-gradient-dark text-white" onclick="openEmployeeModal(' + row.id + ')"><i class="fa fa-home me-1"></i> Edit </a>';
+                         }
+                     }],
+                     "columns": [
+                         { "data": "id" },
+                         { "data": "name" },
+                         { "data": "date" },
+                         { "data": "checkInTime" },
+                         { "data": "checkOutTime" },
+                         { "data": "workHours" },
+                         { "data": "status" }
+                     ]
+                 });
+             }
+
+             // Function to open employee details in modal
+             function openEmployeeModal(id) {
+                 $.ajax({
+                     url: '/admin/attendance/addorupdate?id=' + id,  // ✅ Fixed URL format
+                     type: 'GET',
+                     success: function (result) {
+                         $("#employeeModalBody").html(result); // Load content inside modal
+                         $("#employeeModal").modal('show'); // Show the modal
+                     },
+                     error: function () {
+                         alert("❌ Error fetching employee details.");
+                     }
+                 });
+             }
+          function validation() {
+            var isValidate = true;
+            var today = new Date().toISOString().split("T")[0];
+            $("#Date").attr("min", today);
+
+            function validateTimes() {
+                var checkIn = $("#CheckInTime").val();
+                var checkOut = $("#CheckOutTime").val();
+                if (checkIn && checkOut && checkOut <= checkIn) {
+                    alert("❌ Check-Out Time must be after Check-In Time!");
+                    $("#CheckOutTime").val("");
+                    isValidate = false;
+                }
+            }
+            $("#CheckInTime, #CheckOutTime").change(validateTimes);
+            $("form").submit(function (event) {
+                var checkIn = $("#CheckInTime").val();
+                var checkOut = $("#CheckOutTime").val();
+                var date = $("#Date").val();
+                if (!date) {
+                    alert("❌ Date is required!");
+                    event.preventDefault();
+                    isValidate = false;
+                }
+                if (checkIn && checkOut && checkOut <= checkIn) {
+                    alert("❌ Check-Out Time must be after Check-In Time!");
+                    event.preventDefault();
+                    isValidate = false;
+                }
+            });
+        }
+
+        $(document).on("click", "#view-details", function () {
+            var id = $(this).data("id");
+            $.ajax({
+                url: '@Url.Content("~/")admin/attendance/addorupdate?Id='+ id,
+                type: 'GET',
+                success: function (result) {
+                    $("#employeeModalBody").html(result);
+                    $("#employeeModal").modal('show');
+                }
+            });
+        });
+
+
+    </script>
+}

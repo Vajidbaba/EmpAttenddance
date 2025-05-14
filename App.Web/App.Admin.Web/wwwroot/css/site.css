@@ -1,0 +1,54 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.va-title {
+  margin-top: -65px;
+  margin-bottom: 20px;
+}
+
+div:where(.swal2-container) div:where(.swal2-popup) {
+  width: 21em !important;
+  padding: 0 0 1.25em !important;
+  font-size: 0.8rem !important;
+}
+
+
+
+.power-btn {
+  background: #ffffff;
+  padding: 3px;
+  border-radius: 30px;
+  box-shadow: 0 0 0.3125rem 0 rgb(0 0 0/12%) !important;
+  cursor: pointer;
+  height: 30px;
+  width: 30px;
+  text-align: center !important;
+  margin: 0 0 0 12px;
+}
+
+.v-bg-color {
+  background: #492596 !important;
+}
+.v-color {
+  color: #492596 !important;
+}
+
+.navbar-vertical.navbar-expand-xs .navbar-collapse {
+  height: auto !important;
+}

@@ -1,0 +1,39 @@
+﻿@model LeaveRequests
+
+<h2>Apply for Leave</h2>
+
+<form method="post" asp-action="Apply">
+    <input type="hidden" asp-for="Id" />
+
+    <label>Employee:</label>
+    <select asp-for="EmployeeId" class="form-control">
+        <option value="">-- Select Employee --</option>
+        @foreach (var employee in ViewBag.EmployeeList)
+        {
+            <option value="@employee.Id">@employee.Name</option>
+        }
+    </select>
+
+    <label>Leave Type:</label>
+    <select asp-for="LeaveType" class="form-control">
+        <option value="Sick">Sick</option>
+        <option value="Casual">Casual</option>
+        <option value="Paid">Paid</option>
+        <option value="Unpaid">Unpaid</option>
+    </select>
+
+    <label>Start Date:</label>
+    <input type="date" asp-for="StartDate" class="form-control" required />
+    
+    <label>TotalDays:</label>
+    <input type="text" asp-for="TotalDays" class="form-control" required />
+
+
+    <label>End Date:</label>
+    <input type="date" asp-for="EndDate" class="form-control" required />
+
+    <label>Reason:</label>
+    <textarea asp-for="Reason" class="form-control"></textarea>
+
+    <button type="submit" class="btn btn-primary">Submit Leave Request</button>
+</form>

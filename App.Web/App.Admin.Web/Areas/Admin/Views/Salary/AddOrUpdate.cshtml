@@ -1,0 +1,34 @@
+﻿@model Common.Data.Models.SalaryModel
+
+<form method="post" asp-action="AddOrUpdate">
+    <input type="hidden" asp-for="Id" />
+
+    <label>Employee:</label>
+    <select asp-for="EmployeeId" class="form-control">
+        <option value="">-- Select Employee --</option>
+        @foreach (var employee in ViewBag.EmployeeList)
+        {
+            <option value="@employee.Id">@employee.Name</option>
+        }
+    </select>
+
+    <label>Salary Type:</label>
+    <select asp-for="SalaryType" class="form-control">
+        <option value="Hourly">Hourly</option>
+        <option value="Daily">Daily</option>
+        <option value="Monthly">Monthly</option>
+    </select>
+
+    <label>Base Salary:</label>
+    <input type="number" asp-for="BaseSalary" class="form-control" required />
+
+    <label>Overtime Pay:</label>
+    <input type="number" asp-for="OvertimePay" class="form-control" />
+
+    <label>Deductions:</label>
+    <input type="number" asp-for="Deductions" class="form-control" />
+
+    <button type="submit" class="btn btn-primary">
+        @(Model.Id > 0 ? "Update Salary" : "Add Salary")
+    </button>
+</form>

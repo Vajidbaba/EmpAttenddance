@@ -1,0 +1,30 @@
+﻿@model EmployeeModel
+
+
+
+<div class="card m-0">
+    <div class="card-body p-3">
+        <div class="row">
+            <div class="col-md-6 text-start d-flex align-items-center">
+                <h6 class="font-weight-bolder  text-primary"><span class="text-dark">Details</span></h6>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="@Url.Action("List", "Employees")" class="btn btn-dark btn-sm px-3"><i class="fa fa-arrow-left text-sm"></i></a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p>ID: <b> @Model.Id</b></p>
+                <p>Name: <b>@Model.Name</b></p>
+                <p>Email: <b>@Model.Email</b></p>
+                <p>Contact: <b>@Model.Contact</b></p>
+            </div>
+            <div class="col-md-6">
+                <p>Department: <b>@Model.Department</b></p>
+                <p>Role:  <b>@Model.Role</b></p>
+                <p>Salary Type:  <b>@Model.SalaryType</b></p>
+                <p>Date of Joining:  <b>@Model.DateOfJoining.ToShortDateString()</b></p>
+            </div>
+        </div>
+    </div>
+</div>

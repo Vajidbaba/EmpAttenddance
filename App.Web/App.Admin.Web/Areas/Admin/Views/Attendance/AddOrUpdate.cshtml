@@ -1,0 +1,35 @@
+﻿@* @model Common.Data.Models.AttendanceModel
+
+<form method="post" asp-action="AddOrUpdate">
+    <input type="hidden" asp-for="Id" />
+    <label>Employee:</label>
+    <select asp-for="EmployeeId" class="form-control">
+        <option value="">-- Select Employee --</option>
+        @foreach (var employee in ViewBag.EmployeeList)
+        {
+            <option value="@employee.Id">@employee.Name</option>
+        }
+    </select>
+
+    <label>Date:</label>
+    <input type="date" asp-for="Date" class="form-control" required />
+
+    <label>Check-In Time:</label>
+    <input type="time" asp-for="CheckInTime" class="form-control" />
+
+    <label>Check-Out Time:</label>
+    <input type="time" asp-for="CheckOutTime" class="form-control" />
+
+    <label>Status:</label>
+    <select name="Status" class="form-control">
+        <option value="Present">Present</option>
+        <option value="Late">Late</option>
+        <option value="Absent">Absent</option>
+        <option value="Half-Day">Half-Day</option>
+    </select>
+
+    <button type="submit" class="btn btn-primary">
+        @(Model.Id > 0 ? "Update Attendance" : "Add Attendance")
+    </button>
+</form>
+ *@

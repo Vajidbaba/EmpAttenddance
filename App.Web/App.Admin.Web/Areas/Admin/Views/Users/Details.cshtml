@@ -1,0 +1,68 @@
+﻿@model Common.Data.Models.Users;
+@{
+    ViewData["Title"] = "Details";
+}
+<h6 class="font-weight-bolder va-title text-primary"><span class="text-dark">Users / </span>Details</h6>
+
+
+
+<div class="card">
+    <div class="card-body p-3">
+        <div class="row">
+            <div class="col-6">
+                <ul class="list-group">
+                    <li class="list-group-item border-0 ps-0 text-xs"><strong class="text-dark">Username:</strong> &nbsp; @Model.Username</li>
+                    <li class="list-group-item border-0 ps-0 text-xs"><strong class="text-dark">Password:</strong> @Model.Password</li>
+                    <li class="list-group-item border-0 ps-0 text-xs"><strong class="text-dark">Role:</strong>
+                        @if (@Model.Role  == "1")
+                        {
+                            <span class="fw-bolder text-primary">Admin</span>
+                        }
+                        else if (@Model.Role == "2")
+                        {
+                            <span class="fw-bolder text-primary">Client</span>
+
+                        }
+                        else if (@Model.Role == "3")
+                        {
+                            <span class="fw-bolder text-primary">Supervisor</span>
+
+                        }
+                        else
+                        {
+                            <span cite="fw-bolder text-primary">User</span>
+                        }
+                    </li>
+                    <li class="list-group-item border-0 ps-0 text-xs"><strong class="text-dark">User Id:</strong> @Model.Id</li>
+                </ul>
+            </div>
+            <div class="col-6">
+                <ul class="list-group">
+                    <li class="list-group-item border-0 ps-0 text-xs"><strong class="text-dark">Created On:</strong> &nbsp; @Model.AddedOn</li>
+                    <li class="list-group-item border-0 ps-0 text-xs"><strong class="text-dark">Created By:</strong> &nbsp; @Model.AddedBy</li>
+                    <li class="list-group-item border-0 ps-0 text-xs"><strong class="text-dark">Updated On:</strong> @Model.UpdatedOn</li>
+                    <li class="list-group-item border-0 ps-0 text-xs"><strong class="text-dark">Updated By:</strong> @Model.UpdatedBy</li>
+                    <li class="list-group-item border-0 ps-0 text-xs"><strong class="text-dark">Status: </strong> &nbsp;
+                      
+                        @if (@Model.Active == true)
+                        {
+                            <span class="badge badge-sm text-xxs  bg-gradient-success"> Active</span>
+
+                        }
+                        else
+                        {
+                            <span class="badge badge-sm text-xxs  bg-gradient-secondary"> InActive</span>
+
+                        }
+
+                    </li>
+                </ul>
+            </div>
+
+
+        </div>
+        <button onclick="history.back()" class="badge mt-3 badge-sm btn-sm bg-gradient-dark">
+            <i class="fa fa-arrow-left pe-1"></i> Back
+        </button>
+    </div>
+</div>

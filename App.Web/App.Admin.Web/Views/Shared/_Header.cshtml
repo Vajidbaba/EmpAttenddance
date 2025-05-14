@@ -1,0 +1,14 @@
+﻿<nav class="navbar navbar-main navbar-expand-lg px-0 pb-0 shadow-none " id="navbarBlur" navbar-scroll="true">
+    <div class="container-fluid ">
+        <div class="collapse navbar-collapse " id="navbar">
+            <div class="navbar-nav d-flex ms-md-auto align-items-center justify-content-end">
+                <span class="me-2">Welcome,</span> <b>@User.FindFirst(System.Security.Claims.ClaimTypes.Name).Value</b>
+            </div>
+            <div class="power-btn" style="">
+                <a href="~/Login/SignOut">
+                <i class="fa fa-power-off text-danger"></i>
+              </a>
+            </div>
+        </div>
+    </div>
+</nav>
