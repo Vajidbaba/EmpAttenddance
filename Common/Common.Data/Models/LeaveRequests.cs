@@ -1,11 +1,7 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-
-namespace Common.Data.Models
+﻿namespace Common.Data.Models
 {
     public class LeaveRequests : BaseModel
     {
-        public int Id { get; set; }
 
         public int EmployeeId { get; set; }
 

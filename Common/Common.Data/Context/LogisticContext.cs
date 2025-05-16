@@ -14,18 +14,12 @@ namespace Common.Data.Context
         public LogisticContext(DbContextOptions<LogisticContext> options) : base(options)
         {
         }
-
         public virtual DbSet<Users> Users { get; set; } = null!;
         public DbSet<EmployeeModel> Employees { get; set; }
         public DbSet<AttendanceModel> Attendance { get; set; }
         public DbSet<LeaveRequests> LeaveRequests { get; set; }
-
-        public DbSet<SalaryModel> Salary { get; set; }
+        public DbSet<Salaries> Salaries { get; set; }
         public DbSet<MarkAttendance> MarkAttendance { get; set; }
-
-
-
-
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -19,6 +19,7 @@ namespace App.Admin.Web.Areas.Admin.Controllers
             _contextHelper = contextHelper;
         }
 
+        #region Employee
         public async Task<IActionResult> List()
         {
             var employees = await _employeeService.GetAllEmployees();
@@ -31,15 +32,12 @@ namespace App.Admin.Web.Areas.Admin.Controllers
 
             return View(employees);
         }
-
-
         [HttpGet]
         public IActionResult AddOrUpdate(int? Id)
         {
             EmployeeModel model = Id.HasValue ? _employeeService.GetEmployeeDetails(Id) : new EmployeeModel();
             return View(model);
         }
-
         [HttpPost]
         public IActionResult AddOrUpdate(EmployeeModel employee)
         {
@@ -74,6 +72,12 @@ namespace App.Admin.Web.Areas.Admin.Controllers
 
             return PartialView("_EmployeeDetails", employee);
         }
-
+        #endregion
+        #region Salaries
+        public IActionResult Salaries()
+        {
+            return View();
+        }
+        #endregion
     }
 }

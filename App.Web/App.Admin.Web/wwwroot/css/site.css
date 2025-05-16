@@ -101,10 +101,15 @@ tbody tr:nth-child(even) {
   content: " *";
   color: red;
 }
-.dataTables_wrapper .dataTables_info{
-  font-size:14px;
+.dataTables_wrapper .dataTables_info {
+  font-size: 12px;
+  margin-left: 8px !important;
 }
 
 .dataTables_wrapper .dataTables_filter {
   margin: 4px !important;
+}
+.dataTables_wrapper  .dataTables_paginate {
+  margin: 4px !important;
+  font-size:12px !important;
 }

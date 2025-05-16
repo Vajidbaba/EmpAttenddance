@@ -4,8 +4,6 @@
 }
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
-
-
 <div class="card rounded-2 mt-3">
     <div class="card-header rounded-top bg-dark text-white text-sm px-3 py-1 d-flex align-items-center">
         <h6 class="mb-0 text-white text-sm me-auto"> Attendance</h6>
@@ -14,7 +12,7 @@
     <div class="card-body p-1">
         @if (!Model.Any())
         {
-            <p>No employees found.</p>
+            <p class="text-center">No employees found.</p>
         }
         else
         {

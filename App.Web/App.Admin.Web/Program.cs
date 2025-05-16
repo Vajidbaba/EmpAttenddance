@@ -28,7 +28,6 @@ builder.Services.AddTransient(typeof(IGenericRepository<>), typeof(GenericReposi
 builder.Services.AddScoped<IUsersService, UsresService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
-builder.Services.AddScoped<ISalaryService, SalaryService>();
 builder.Services.AddScoped<ILeaveService, LeaveService>();
 builder.Services.AddSingleton<IContextHelper, ContextHelper>();
 

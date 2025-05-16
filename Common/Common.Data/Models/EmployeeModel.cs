@@ -4,7 +4,6 @@ namespace Common.Data.Models
 {
     public class EmployeeModel : BaseModel
     {
-        public int Id { get; set; }
         [Required(ErrorMessage = "Name is required")]
         public string? Name { get; set; }
         public string? FatherName { get; set; }

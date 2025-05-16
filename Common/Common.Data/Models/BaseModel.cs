@@ -6,6 +6,7 @@ namespace Common.Data.Models
 {
     public class BaseModel
     {
+        public int Id { get; set; }
         public bool Active { get; set; } = true;
         public DateTime? AddedOn { get; set; } = DateTime.Now;
         public string? AddedBy { get; set; }

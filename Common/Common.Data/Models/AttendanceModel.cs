@@ -4,7 +4,6 @@ namespace Common.Data.Models
 {
     public class AttendanceModel : BaseModel
     {
-        public int Id { get; set; }
         public int EmployeeId { get; set; }
         public DateTime Date { get; set; } = DateTime.Now.Date;
         public TimeSpan? CheckInTime { get; set; }
