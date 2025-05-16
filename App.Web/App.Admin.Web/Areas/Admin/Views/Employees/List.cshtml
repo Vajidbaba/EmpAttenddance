@@ -1,5 +1,7 @@
 ﻿@model List<Common.Data.Models.EmployeeModel>
-
+@{
+    ViewData["Title"] = "Employee";
+}
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
 
@@ -23,9 +25,8 @@
         {
             <div class="table-responsive" style="border:1px solid #ddd">
                 <table id="employee" class="table table-sm table-striped table-hover mb-0 dt-responsive nowrap w-100 small align-middle">
-                    <thead class="table-light">
+                    <thead>
                         <tr>
-                            <th class="p-1 ps-2">ID</th>
                             <th class="p-1 ps-2">Name</th>
                             <th class="p-1 ps-2">Email</th>
                             <th class="p-1 ps-2">Contact</th>
@@ -39,7 +40,6 @@
                         @foreach (var employee in Model)
                         {
                             <tr>
-                                <td class="p-1 ps-2">@employee.Id</td>
                                 <td class="p-1 ps-2">@employee.Name</td>
                                 <td class="p-1 ps-2">@employee.Email</td>
                                 <td class="p-1 ps-2">@employee.Contact</td>

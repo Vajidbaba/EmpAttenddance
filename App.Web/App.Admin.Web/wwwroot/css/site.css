@@ -59,8 +59,9 @@ table {
 }
 
 thead {
-  background: linear-gradient(to right, #4b6cb7, #182848) !important; /* Gradient color */
-  color: white;
+  background: linear-gradient(to bottom, #e3e3e3, #7b90ab) !important;
+  color: #484646 !important;
+  font-weight: 500 !important;
 }
 
 th, td {
