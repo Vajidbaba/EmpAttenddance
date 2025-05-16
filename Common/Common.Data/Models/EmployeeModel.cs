@@ -6,7 +6,7 @@ namespace Common.Data.Models
     {
         public int Id { get; set; }
         [Required(ErrorMessage = "Name is required")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public string? FatherName { get; set; }
         public string? Email { get; set; }
         public string? Contact { get; set; }

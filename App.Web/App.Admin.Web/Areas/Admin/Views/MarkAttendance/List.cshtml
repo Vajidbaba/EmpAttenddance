@@ -2,13 +2,17 @@
 @{
     ViewData["Title"] = "Attendance";
 }
-<h6>Attendance</h6>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
-<div class="card rounded-2 mb-2">
-    <div class="card-body p-2">
-        <div class="table-responsive">
-            <table id="users" class="table table-sm mb-0 dt-responsive nowrap w-100 small align-middle">
-                <thead class="table-light">
+<div class="card rounded-2 my-3">
+    <div class="card-header rounded-top bg-dark text-white text-sm px-3 py-1 d-flex align-items-center">
+        <h6 class="mb-0 text-white text-sm me-auto"> Attendance</h6>
+        <a onclick="ViewSummery()" class="btn btn-light btn-sm py-1 rounded-1 px-3 m-0 ms-auto"> <i class="fa fa-list me-2"></i> Summery</a>
+    </div>
+    <div class="card-body p-1">
+        <div class="table-responsive" style="border:1px solid #ddd">
+            <table id="attendance" class="table table-sm table-striped table-hover mb-0 dt-responsive nowrap w-100 small align-middle">
+                <thead>
                     <tr>
                         <th class="p-1 ps-2">Name</th>
                         <th class="p-1 ps-2">Contact</th>
@@ -36,16 +40,35 @@
     </div>
 </div>
 
-<!-- Offcanvas Details -->
+<!-- Offcanvas Add -->
 <div class="offcanvas offcanvas-end w-50" tabindex="-1" id="attModal" aria-labelledby="employeeDetailsLabel">
     <div class="offcanvas-body" id="addDetailsContent">
     </div>
 </div>
 
+<!-- Offcanvas Summery -->
+<div class="offcanvas offcanvas-end w-75" tabindex="-1" id="summery" aria-labelledby="summeryContent">
+    <div class="offcanvas-body" id="summeryContent">
+    </div>
+</div>
+
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://cdn.datatables.net/2.3.0/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script type="text/javascript">
+           $(document).ready(function () {
+            $('#attendance').DataTable({
+                responsive: true,
+                paging: true,
+                searching: false,
+                ordering: false,
+                info: true,
+                lengthChange: false,
+                autoWidth: false
+            });
+          
+        });
         $("form").submit(function(e) {
             e.preventDefault();
             var form = $(this);
@@ -86,6 +109,27 @@
                 },
                 error: function () {
                     $("#addDetailsContent").html('<p class="text-danger">❌ Failed to load details.</p>');
+                }
+            });
+        }
+
+        function ViewSummery(id) {
+            $.ajax({
+                url: '@Url.Content("~/admin/markattendance/summery")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $("#summeryContent").html(result);
+                    var offcanvas = new bootstrap.Offcanvas(document.getElementById('summery'));
+                    offcanvas.show();
+                      $('#attendanceSummery').DataTable({
+                          responsive: true,
+                          searching: true,
+                          lengthChange: false,
+                      });
+                },
+                error: function () {
+                    $("#summeryContent").html('<p class="text-danger">❌ Failed to load details.</p>');
                 }
             });
         }

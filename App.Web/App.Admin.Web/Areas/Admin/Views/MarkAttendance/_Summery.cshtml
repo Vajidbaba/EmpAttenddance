@@ -1,0 +1,32 @@
+﻿@model List<Common.Core.ViewModels.AttendanceFormViewModel>
+
+
+<div class="card rounded-2 my-3">
+    <div class="card-header rounded-top bg-dark text-white text-sm px-3 py-1 d-flex align-items-center">
+        <h6 class="mb-0 text-white text-sm me-auto"> Summery</h6>
+        <button data-bs-dismiss="offcanvas" class="btn btn-light btn-sm mb-0 px-3 py-1" "> <i class="fa fa-close"></i></button>
+    </div>
+    <div class="card-body p-1">
+        <div class="table-responsive" style="border:1px solid #ddd">
+            <table id="attendanceSummery" class="table table-sm table-striped table-hover mb-0 dt-responsive nowrap w-100 small align-middle">
+                <thead>
+                    <tr>
+                        <th class="p-1 ps-2">Name</th>
+                        <th class="p-1 ps-2">Date</th>
+                        <th class="p-1 ps-2">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="p-1 ps-2">@item.EmployeeName</td>
+                            <td class="p-1 ps-2">@item.AttendanceDate.ToShortDateString()</td>
+                            <td class="p-1 ps-2 status-@item.AttendanceStatus.Replace(" ", "")">@item.AttendanceStatus</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

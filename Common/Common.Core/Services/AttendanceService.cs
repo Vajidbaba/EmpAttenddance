@@ -20,6 +20,7 @@ namespace Common.Core.Services
         Task SaveOrUpdateAttendance(AttendanceFormViewModel model, string userId);
         Task<MarkAttendance?> GetTodayAttendanceAsync(int Id);
         Task<List<EmployeeWithAttendanceStatus>> GetEmployeesWithTodayAttendanceAsync();
+        Task<List<MarkAttendance>> GetAttendanceSummery();
     }
     public class AttendanceService : IAttendanceService
     {
@@ -63,6 +64,12 @@ namespace Common.Core.Services
             return await _dbcontext.MarkAttendance
                 .FirstOrDefaultAsync(a => a.EmployeeId == Id && a.AttendanceDate.Date == DateTime.Today);
         }
+        public async Task<List<MarkAttendance>> GetAttendanceSummery()
+        {
+            return await _dbcontext.MarkAttendance.Where(x => x.Active).ToListAsync();
+        }
+
+
         public async Task<List<AttendanceModel>> GetAllAttendanceRecords()
         {
             return await _dbcontext.Attendance.Where(x => x.Active).ToListAsync();

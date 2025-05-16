@@ -40,6 +40,24 @@ namespace App.Admin.Web.Areas.Admin.Controllers
             return PartialView("_Add", model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Summery()
+        {
+            var attendanceList = await _attendanceService.GetAttendanceSummery();
+            var employees = await _employeeService.GetAllEmployees();
+
+            var model = employees.Select(emp => new AttendanceFormViewModel
+            {
+                EmployeeId = emp.Id,
+                EmployeeName = emp.Name ?? "N/A",
+                AttendanceDate = attendanceList.FirstOrDefault(a => a.EmployeeId == emp.Id)?.AttendanceDate ?? DateTime.Today,
+                AttendanceStatus = attendanceList.FirstOrDefault(a => a.EmployeeId == emp.Id)?.AttendanceStatus ?? "Absent"
+            }).ToList();
+
+            return PartialView("_Summery", model);
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> Add(AttendanceFormViewModel model)
         {

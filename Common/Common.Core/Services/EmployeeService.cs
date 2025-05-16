@@ -31,7 +31,7 @@ namespace Common.Core.Services
             {
                 try
                 {
-                    return await _dbcontext.Employees.ToListAsync();
+                    return await _dbcontext.Employees.Where(x =>x.Active).ToListAsync();
                 }
                 catch (Exception)
                 {
@@ -41,7 +41,7 @@ namespace Common.Core.Services
 
             public async Task<EmployeeModel?> GetEmployeeById(int id)
             {
-                return await _dbcontext.Employees.FirstOrDefaultAsync(e => e.Id == id);
+                return await _dbcontext.Employees.FirstOrDefaultAsync(e => e.Active && e.Id == id);
             }
 
             public int GetEmployeeCount()

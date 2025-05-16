@@ -6,17 +6,12 @@
 
 
 
-<div class="card rounded-2 mt-2">
-    <div class="card-body p-2">
-        <div class="row">
-            <div class="col-md-6 text-start d-flex align-items-center">
-                <h6>Employee List</h6>
-            </div>
-            <div class="col-md-6 text-end">
-                <a href="@Url.Action("AddOrUpdate", "Employees")" class="btn btn-success btn-sm  px-3"><i class="fa fa-plus text-sm"></i></a>
-            </div>
-        </div>
-
+<div class="card rounded-2 mt-3">
+    <div class="card-header rounded-top bg-dark text-white text-sm px-3 py-1 d-flex align-items-center">
+        <h6 class="mb-0 text-white text-sm me-auto"> Attendance</h6>
+        <a href="@Url.Action("AddOrUpdate", "Employees")" class="btn btn-light btn-sm py-1 rounded-1 px-3 m-0 ms-auto"> <i class="fa fa-plus me-2"></i> Add Employee</a>
+    </div>
+    <div class="card-body p-1">
         @if (!Model.Any())
         {
             <p>No employees found.</p>
