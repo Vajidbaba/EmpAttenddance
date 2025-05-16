@@ -1,5 +1,4 @@
 ﻿using Common.Core.Services;
-using Common.Core.ViewModels;
 using Common.Data.Context;
 using Common.Data.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +26,7 @@ namespace App.Admin.Web.Areas.Admin.Controllers
             if (employees == null || employees.Count == 0)
             {
                 ViewBag.Message = "No employees found.";
-                return View(new List<EmployeeModel>()); // Return empty list instead of null
+                return View(new List<EmployeeModel>());
             }
 
             return View(employees);
@@ -46,9 +45,10 @@ namespace App.Admin.Web.Areas.Admin.Controllers
         {
             if (employee != null)
             {
-                if (employee.Id > 0) // Update existing employee
+                if (employee.Id > 0)
                 {
-                    var updated = _employeeService.UpdateEmployee(employee.Id, employee);
+                    var userId = _contextHelper.GetUsername();
+                    var updated = _employeeService.UpdateEmployee(employee.Id, employee, userId);
                     Toast(updated ? "Employee Updated Successfully!" : "Error updating employee!", updated ? ToastType.SUCCESS : ToastType.ERROR);
                 }
                 else // Add new employee

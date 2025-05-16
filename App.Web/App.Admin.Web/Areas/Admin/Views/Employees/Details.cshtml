@@ -22,8 +22,7 @@
             <div class="col-md-6">
                 <p>Department: <b>@Model.Department</b></p>
                 <p>Role:  <b>@Model.Role</b></p>
-                <p>Salary Type:  <b>@Model.SalaryType</b></p>
-                <p>Date of Joining:  <b>@Model.DateOfJoining.ToShortDateString()</b></p>
+                <p>Date of Joining:  <b>@Model.DateOfJoining?.ToShortDateString()</b></p>
             </div>
         </div>
     </div>

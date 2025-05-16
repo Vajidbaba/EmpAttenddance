@@ -15,6 +15,11 @@ namespace Common.Core.Services
         Task<bool> AddAttendance(AttendanceModel attendance);
         Task<bool> UpdateAttendance(int id, AttendanceModel attendance);
         DataTableResultModel GetDataTable(DataTableModel model);
+
+        //new
+        Task SaveOrUpdateAttendance(AttendanceFormViewModel model, string userId);
+        Task<MarkAttendance?> GetTodayAttendanceAsync(int Id);
+        Task<List<EmployeeWithAttendanceStatus>> GetEmployeesWithTodayAttendanceAsync();
     }
     public class AttendanceService : IAttendanceService
     {
@@ -28,17 +33,63 @@ namespace Common.Core.Services
             _configuration = configration;
             _contextHelper = contextHelper;
         }
+        public async Task SaveOrUpdateAttendance(AttendanceFormViewModel model, string userId)
+        {
+            var attendance = await _dbcontext.MarkAttendance
+                .FirstOrDefaultAsync(a => a.EmployeeId == model.EmployeeId && a.AttendanceDate.Date == model.AttendanceDate.Date);
 
+            if (attendance == null)
+            {
+                attendance = new MarkAttendance
+                {
+                    AddedBy = userId,
+                    EmployeeId = model.EmployeeId,
+                    AttendanceDate = model.AttendanceDate,
+                    AttendanceStatus = model.AttendanceStatus,
+                };
+                _dbcontext.MarkAttendance.Add(attendance);
+            }
+            else
+            {
+                attendance.UpdatedBy = userId;
+                attendance.UpdatedOn = DateTime.Now;
+                attendance.AttendanceStatus = model.AttendanceStatus;
+                _dbcontext.MarkAttendance.Update(attendance);
+            }
+            await _dbcontext.SaveChangesAsync();
+        }
+        public async Task<MarkAttendance?> GetTodayAttendanceAsync(int Id)
+        {
+            return await _dbcontext.MarkAttendance
+                .FirstOrDefaultAsync(a => a.EmployeeId == Id && a.AttendanceDate.Date == DateTime.Today);
+        }
         public async Task<List<AttendanceModel>> GetAllAttendanceRecords()
         {
             return await _dbcontext.Attendance.Where(x => x.Active).ToListAsync();
         }
-
         public async Task<AttendanceModel> GetAttendanceById(int id)
         {
             return await _dbcontext.Attendance.FirstOrDefaultAsync(x => x.Id == id);
         }
+        public async Task<List<EmployeeWithAttendanceStatus>> GetEmployeesWithTodayAttendanceAsync()
+        {
+            var today = DateTime.Today;
 
+            var data = await (from e in _dbcontext.Employees
+                              where e.Active
+                              join a in _dbcontext.MarkAttendance.Where(x => x.AttendanceDate.Date == today)
+                                  on e.Id equals a.EmployeeId into attendanceGroup
+                              from att in attendanceGroup.DefaultIfEmpty()
+                              select new EmployeeWithAttendanceStatus
+                              {
+                                  Id = e.Id,
+                                  Name = e.Name,
+                                  Contact = e.Contact,
+                                  AttendanceStatus = att != null ? att.AttendanceStatus : "Not Marked"
+                              }).ToListAsync();
+
+            return data;
+        }
         public async Task<bool> AddAttendance(AttendanceModel attendance)
         {
             var userId = _contextHelper.GetUsername();
@@ -74,8 +125,6 @@ namespace Common.Core.Services
             await _dbcontext.SaveChangesAsync();
             return true;
         }
-
-
         public async Task<bool> UpdateAttendance(int id, AttendanceModel attendance)
         {
             var record = await _dbcontext.Attendance.FirstOrDefaultAsync(x => x.Id == id);
@@ -117,7 +166,6 @@ namespace Common.Core.Services
             };
             return result;
         }
-
         private List<DataTableModel> GetDataTables(DataTableModel model)
         {
             List<DataTableModel> result = new List<DataTableModel>();
@@ -157,6 +205,5 @@ namespace Common.Core.Services
             }
             return result;
         }
-
     }
 }

@@ -10,8 +10,9 @@ namespace Common.Core.Services
         Task<List<EmployeeModel>> GetAllEmployees();
         int GetEmployeeCount();
         int CreateEmployee(EmployeeModel employee);
-        bool UpdateEmployee(int id, EmployeeModel employee);
+        bool UpdateEmployee(int id, EmployeeModel employee, string userId);
         EmployeeModel GetEmployeeDetails(int? Id);
+        Task<EmployeeModel?> GetEmployeeById(int id);
 
         public class EmployeeService : IEmployeeService
         {
@@ -30,12 +31,17 @@ namespace Common.Core.Services
             {
                 try
                 {
-                    return await _dbcontext.Employees.Where(x => x.Active).ToListAsync();
+                    return await _dbcontext.Employees.ToListAsync();
                 }
                 catch (Exception)
                 {
                     throw;
                 }
+            }
+
+            public async Task<EmployeeModel?> GetEmployeeById(int id)
+            {
+                return await _dbcontext.Employees.FirstOrDefaultAsync(e => e.Id == id);
             }
 
             public int GetEmployeeCount()
@@ -61,17 +67,19 @@ namespace Common.Core.Services
                         Active = true,
                         AddedBy = userId,
                         AddedOn = DateTime.Now,
-                        UpdatedBy = userId,
-                        UpdatedOn = DateTime.Now,
                         Name = entity.Name,
+                        FatherName = entity.FatherName,
                         Email = entity.Email,
                         Contact = entity.Contact,
                         Department = entity.Department,
                         Role = entity.Role,
                         DateOfJoining = entity.DateOfJoining,
-                        SalaryType = entity.SalaryType
+                        DateOfResign = entity.DateOfResign,
+                        City = entity.City,
+                        State = entity.State,
+                        Pin = entity.Pin,
+                        Address = entity.Address,
                     };
-
                     _dbcontext.Employees.Add(employee);
                     _dbcontext.SaveChanges();
                     return employee.Id;
@@ -82,25 +90,27 @@ namespace Common.Core.Services
                 }
             }
 
-            public bool UpdateEmployee(int id, EmployeeModel model)
+            public bool UpdateEmployee(int id, EmployeeModel model, string userId)
             {
                 try
                 {
-                    var userId = _contextHelper.GetUsername();
                     var entity = _dbcontext.Employees.SingleOrDefault(x => x.Id == id);
                     if (entity == null) return false;
-
                     entity.UpdatedBy = userId;
                     entity.UpdatedOn = DateTime.Now;
                     entity.Active = model.Active;
                     entity.Name = model.Name;
+                    entity.FatherName = model.FatherName;
                     entity.Email = model.Email;
                     entity.Contact = model.Contact;
                     entity.Department = model.Department;
                     entity.Role = model.Role;
                     entity.DateOfJoining = model.DateOfJoining;
-                    entity.SalaryType = model.SalaryType;
-
+                    entity.DateOfResign = model.DateOfResign;
+                    entity.City = model.City;
+                    entity.State = model.State;
+                    entity.Pin = model.Pin;
+                    entity.Address = model.Address;
                     _dbcontext.Update(entity);
                     _dbcontext.SaveChanges();
                     return true;
@@ -115,7 +125,7 @@ namespace Common.Core.Services
             {
                 try
                 {
-                    return _dbcontext.Employees.SingleOrDefault(x => x.Id == Id);
+                    return _dbcontext.Employees.FirstOrDefault(x => x.Id == Id);
                 }
                 catch (Exception)
                 {

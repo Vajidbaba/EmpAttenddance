@@ -21,6 +21,8 @@ namespace Common.Data.Context
         public DbSet<LeaveRequests> LeaveRequests { get; set; }
 
         public DbSet<SalaryModel> Salary { get; set; }
+        public DbSet<MarkAttendance> MarkAttendance { get; set; }
+
 
 
 

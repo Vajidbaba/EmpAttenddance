@@ -1,0 +1,42 @@
+﻿@model Common.Core.ViewModels.AttendanceFormViewModel
+<div class="card shadow-sm rounded-2">
+    <div class="card-header rounded-top bg-dark  text-white text-sm px-3 py-1">
+        <h6 class="mb-0 text-white">Mark Attendance</h6>
+    </div>
+    <div class="card-body p-3">
+        <form method="post" asp-action="Add" id="attendanceForm">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="EmployeeId" />
+            <input type="hidden" asp-for="EmployeeName" />
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Today Date</label>
+                    <input asp-for="AttendanceDate" type="date" class="form-control form-control-sm" readonly />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Employee Name</label>
+                    <input asp-for="EmployeeName" class="form-control form-control-sm" readonly />
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Attendance</label>
+                <div class="d-flex gap-3">
+                    @foreach (var status in new[] { "Present", "Absent", "Half Day", "Leave" })
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="AttendanceStatus" value="@status" checked="@(Model.AttendanceStatus == status)">
+                            <label class="form-check-label">@status</label>
+                        </div>
+                    }
+                </div>
+                <span asp-validation-for="AttendanceStatus" class="text-danger small"></span>
+            </div>
+            <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                <button type="submit" class="btn btn-dark btn-sm mb-0">
+                    <i class="fa fa-check me-1"></i> Save
+                </button>
+                <button type="button" class="btn btn-outline-dark btn-sm mb-0" data-bs-dismiss="offcanvas">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>

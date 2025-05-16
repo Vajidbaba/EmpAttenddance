@@ -9,7 +9,7 @@ namespace Common.Data.Models
         public bool Active { get; set; } = true;
         public DateTime? AddedOn { get; set; } = DateTime.Now;
         public string? AddedBy { get; set; }
-        public DateTime? UpdatedOn { get; set; } = DateTime.Now;
+        public DateTime? UpdatedOn { get; set; }
         public string? UpdatedBy { get; set; }
     }
 }

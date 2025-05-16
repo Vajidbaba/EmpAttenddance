@@ -72,3 +72,35 @@ th, td {
 tbody tr:nth-child(even) {
   background-color: #f2f2f2;
 }
+.status-Present {
+  color: green;
+  font-weight: bold;
+}
+
+.status-Absent {
+  color: red;
+  font-weight: bold;
+}
+
+.status-Leave {
+  color: orange;
+  font-weight: bold;
+}
+
+.status-HalfDay {
+  color: blue;
+  font-weight: bold;
+}
+
+.status-NotMarked {
+  color: gray;
+  font-style: italic;
+}
+.required::after {
+  content: " *";
+  color: red;
+}
+.dataTables_wrapper .dataTables_info{
+  padding-left:9px;
+  font-size:14px;
+}

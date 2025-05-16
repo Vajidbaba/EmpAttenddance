@@ -1,0 +1,93 @@
+﻿@model List<Common.Core.ViewModels.EmployeeWithAttendanceStatus>
+@{
+    ViewData["Title"] = "Attendance";
+}
+<h6>Attendance</h6>
+
+<div class="card rounded-2 mb-2">
+    <div class="card-body p-2">
+        <div class="table-responsive">
+            <table id="users" class="table table-sm mb-0 dt-responsive nowrap w-100 small align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th class="p-1 ps-2">Name</th>
+                        <th class="p-1 ps-2">Contact</th>
+                        <th class="p-1 ps-2">Status</th>
+                        <th class="p-1 ps-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="p-1 ps-2">@item.Name</td>
+                            <td class="p-1 ps-2">@item.Contact</td>
+                            <td class="p-1 ps-2 status-@item.AttendanceStatus.Replace(" ", "")">@item.AttendanceStatus</td>
+                            <td class="p-1 ps-2">
+                                <a href="javascript:void(0);" onclick="Add(@item.Id)" class="btn btn-dark btn-sm mb-0 px-3 py-1">
+                                    <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Offcanvas Details -->
+<div class="offcanvas offcanvas-end w-50" tabindex="-1" id="attModal" aria-labelledby="employeeDetailsLabel">
+    <div class="offcanvas-body" id="addDetailsContent">
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.3.0/js/dataTables.js"></script>
+    <script type="text/javascript">
+        $("form").submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr("action");
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(),
+                success: function(response) {
+                    if(response.success){
+                        alert(response.message);
+                        var offcanvasEl = document.getElementById('attModal');
+                        var offcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
+                        offcanvas.hide();
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function() {
+                    alert("Something went wrong");
+                }
+            });
+        });
+        function Add(id) {
+            $.ajax({
+                url: '@Url.Content("~/admin/markattendance/add")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $("#addDetailsContent").html(result);
+                    var offcanvas = new bootstrap.Offcanvas(document.getElementById('attModal'));
+                    offcanvas.show();
+
+                    setTimeout(function () {
+                        var today = new Date().toISOString().split("T")[0];
+                        $("#AttendanceDate").val(today);
+                    }, 100);
+                },
+                error: function () {
+                    $("#addDetailsContent").html('<p class="text-danger">❌ Failed to load details.</p>');
+                }
+            });
+        }
+    </script>
+}

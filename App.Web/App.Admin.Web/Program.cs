@@ -1,6 +1,5 @@
 using Common.Core.Services;
 using Common.Data.Context;
-using Common.Data.Models;
 using Common.Data.Repositories;
 using Common.Data.Repositories.Contracts;
 using Microsoft.AspNetCore.Authentication.Cookies;

@@ -1,5 +1,7 @@
 ﻿@model List<Common.Data.Models.EmployeeModel>
 
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
 
 
 <div class="card rounded-2 mt-2">
@@ -19,8 +21,8 @@
         }
         else
         {
-            <div class="table-responsive">
-                <table id="users" class="table table-sm table-striped table-hover mb-0 dt-responsive nowrap w-100 small align-middle">
+            <div class="table-responsive" style="border:1px solid #ddd">
+                <table id="employee" class="table table-sm table-striped table-hover mb-0 dt-responsive nowrap w-100 small align-middle">
                     <thead class="table-light">
                         <tr>
                             <th class="p-1 ps-2">ID</th>
@@ -29,7 +31,8 @@
                             <th class="p-1 ps-2">Contact</th>
                             <th class="p-1 ps-2">Department</th>
                             <th class="p-1 ps-2">Role</th>
-                            <th class="p-1 ps-2">Actions</th>
+                            <th class="p-1 ps-2 text-center">Active</th>
+                            <th class="p-1 ps-2 text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,7 +45,11 @@
                                 <td class="p-1 ps-2">@employee.Contact</td>
                                 <td class="p-1 ps-2">@employee.Department</td>
                                 <td class="p-1 ps-2">@employee.Role</td>
-                                <td class="p-1 ps-2">
+                                <td class="p-1 ps-2 fw-bold text-center" style="color: @(employee.Active ? "green" : "red")">
+                                    <i class="@(employee.Active ? "fa fa-check-circle" : "fa fa-times-circle")"></i>
+                                </td>
+
+                                <td class="p-1 ps-2 text-center">
                                     <a href="@Url.Action("AddOrUpdate", "Employees", new { Id = employee.Id })" class="btn btn-success btn-sm mb-0 px-3 py-1"><i class="fa  fa-edit"></i></a>
                                     <a href="javascript:void(0);" class="btn btn-dark btn-sm mb-0 px-3 py-1" onclick="loadDetails(@employee.Id)">
                                         <i class="fa fa-eye"></i>
@@ -72,7 +79,21 @@
 </div>
 
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script>
+         $(document).ready(function () {
+            $('#employee').DataTable({
+                responsive: true,
+                paging: true,
+                searching: false,
+                ordering: false,
+                info: true,
+                lengthChange: false,
+                autoWidth: false
+            });
+        });
            function loadDetails(id) {
             var offcanvasEl = document.getElementById('employeeDetailsCanvas');
             var offcanvas = new bootstrap.Offcanvas(offcanvasEl);
