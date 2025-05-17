@@ -73,24 +73,28 @@ th, td {
 tbody tr:nth-child(even) {
   background-color: #f2f2f2;
 }
+.status {
+  color: white;
+  padding: 1px 6px;
+  border-radius: 5px;
+  width: 26%;
+  text-align: center;
+  font-size: 12px;
+}
 .status-Present {
-  color: green;
-  font-weight: bold;
+  background: green;
 }
 
 .status-Absent {
-  color: red;
-  font-weight: bold;
+  background: red;
 }
 
 .status-Leave {
-  color: orange;
-  font-weight: bold;
+  background: orange;
 }
 
 .status-HalfDay {
-  color: blue;
-  font-weight: bold;
+  background: blue;
 }
 
 .status-NotMarked {
@@ -112,4 +116,11 @@ tbody tr:nth-child(even) {
 .dataTables_wrapper  .dataTables_paginate {
   margin: 4px !important;
   font-size:12px !important;
+}
+.bg-dark {
+  background-image: linear-gradient(310deg, #9b6efc 0%, #492596 100%) !important;
+}
+
+.btn-dark {
+  background-image: linear-gradient(310deg, #9b6efc 0%, #492596 100%) !important;
 }

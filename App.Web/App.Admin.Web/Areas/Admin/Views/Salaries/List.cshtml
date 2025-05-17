@@ -1,0 +1,118 @@
+﻿@model Common.Core.ViewModels.EmployeeSalaryViewModel
+@{
+    ViewData["Title"] = "Salaries";
+}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
+<div class="card rounded-2 mt-3">
+    <div class="card-header rounded-top bg-dark text-white text-sm px-3 py-1 d-flex align-items-center">
+        <h6 class="mb-0 text-white text-sm me-auto">
+            @ViewData["Title"]
+        </h6>
+        @* <a href="@Url.Action("addorupdate", "salaries")" class="btn btn-light btn-sm py-1 rounded-1 px-3 m-0 ms-auto"> <i class="fa fa-plus me-2"></i> Add Salaries</a> *@
+    </div>
+    <div class="card-body p-1">
+        <div class="table-responsive" style="border:1px solid #ddd">
+            <table id="employeesTable" class="table table-sm table-striped table-hover mb-0 dt-responsive nowrap w-100 small align-middle">
+                <thead>
+                    <tr>
+                        <th class="p-1 ps-2">ID</th>
+                        <th class="p-1 ps-2">Name</th>
+                        <th class="p-1 ps-2">Department</th>
+                        <th class="p-1 ps-2">Role</th>
+                        <th class="p-1 ps-2">Base Salary</th>
+                        <th class="p-1 ps-2">Overtime Pay</th>
+                        <th class="p-1 ps-2">Net Salary</th>
+                        <th class="p-1 ps-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var employee in Model.Employees)
+                    {
+                        <tr>
+                            <td class="p-1 ps-2">@employee.Id</td>
+                            <td class="p-1 ps-2">@employee.Name</td>
+                            <td class="p-1 ps-2">@employee.Department</td>
+                            <td class="p-1 ps-2">@employee.Role</td>
+                            <td class="p-1 ps-2">@Model.SalaryList.FirstOrDefault(s => s.EmployeeId == employee.Id)?.BaseSalary ?? 0</td>
+                            <td class="p-1 ps-2">@Model.SalaryList.FirstOrDefault(s => s.EmployeeId == employee.Id)?.OvertimePay ?? 0</td>
+                            <td class="p-1 ps-2">@Model.SalaryList.FirstOrDefault(s => s.EmployeeId == employee.Id)?.NetSalary ?? 0</td>
+                            <td class="p-1 ps-2">
+                                <a href="javascript:void(0);" class="btn btn-dark btn-sm mb-0 px-3 py-1" onclick="openSalaryModal(@employee.Id)">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<!-- Details -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="employeeModal" aria-labelledby="employeeDetailsLabel">
+    <div class="offcanvas-header">
+        <h5 id="employeeDetailsLabel">Employee Attendance</h5>
+        <button type="button" class="btn btn-dark text-white btn-icon-only rounded-circle" data-bs-dismiss="offcanvas"> <i class="fa fa-close"></i></button>
+    </div>
+    <div class="offcanvas-body" id="employeeDetailsContent">
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2">Loading...</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script>
+          $(document).ready(function () {
+            $('#employeesTable').DataTable({
+                responsive: true,
+                lengthChange: false,
+                autoWidth: false
+            });
+        });
+          function openSalaryModal(id) {
+            const offcanvas = new bootstrap.Offcanvas(document.getElementById('employeeModal'));
+            $("#employeeDetailsContent").html(`
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-2">Loading...</p>
+                </div>
+            `);
+            $.ajax({
+                url: '@Url.Content("~/admin/salaries/getsalary")',
+                type: 'GET',
+                data: { id: id },
+                success: function(result) {
+                    $("#employeeDetailsContent").html(result);
+                    offcanvas.show();
+                },
+                error: function() {
+                    $("#employeeDetailsContent").html('<p class="text-danger">❌ Failed to load details.</p>');
+                }
+            });
+        }
+
+        function saveSalary() {
+            var salaryData = {
+                EmployeeId: $("#salaryEmployeeId").val(),
+                BaseSalary: $("#baseSalary").val(),
+                OvertimePay: $("#overtimePay").val(),
+                Deductions: $("#deductions").val()
+            };
+
+            $.post("/Salary/UpdateSalary", salaryData, function(response) {
+                if (response.success) {
+                    location.reload();
+                } else {
+                    alert("Error updating salary!");
+                }
+            });
+        }
+    </script>
+}

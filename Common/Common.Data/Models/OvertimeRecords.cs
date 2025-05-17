@@ -9,5 +9,9 @@ namespace Common.Core.Services
         public decimal? TotalOvertimeHours { get; set; }
         public decimal? RatePerHour { get; set; }
         public decimal? OvertimePay { get; set; }
+        public decimal? AdvancePay { get; set; }
+        public decimal? Bonus { get; set; }
+        public decimal? Deducation { get; set; }
+
     }
 }

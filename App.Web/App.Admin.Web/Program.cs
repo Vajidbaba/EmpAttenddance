@@ -29,9 +29,12 @@ builder.Services.AddScoped<IUsersService, UsresService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<ILeaveService, LeaveService>();
+builder.Services.AddScoped<ISalariesService, SalariesService>();
+builder.Services.AddScoped<IOvertimeRecordsService, OvertimeRecordsService>();
+builder.Services.AddScoped<IMasterOvertimeService, MasterOvertimeService>();
+
+
 builder.Services.AddSingleton<IContextHelper, ContextHelper>();
-
-
 
 var app = builder.Build();
 

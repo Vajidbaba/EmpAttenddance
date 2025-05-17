@@ -1,4 +1,5 @@
-﻿using Common.Data.Models;
+﻿using Common.Core.Services;
+using Common.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Common.Data.Context
@@ -19,7 +20,9 @@ namespace Common.Data.Context
         public DbSet<AttendanceModel> Attendance { get; set; }
         public DbSet<LeaveRequests> LeaveRequests { get; set; }
         public DbSet<Salaries> Salaries { get; set; }
+        public DbSet<OvertimeRecords> OvertimeRecords { get; set; }
         public DbSet<MarkAttendance> MarkAttendance { get; set; }
+        public DbSet<OvertimeMaster> OvertimeMaster { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

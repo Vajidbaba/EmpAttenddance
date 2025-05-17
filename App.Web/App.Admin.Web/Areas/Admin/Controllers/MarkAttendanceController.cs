@@ -28,15 +28,22 @@ namespace App.Admin.Web.Areas.Admin.Controllers
         {
             var attendance = await _attendanceService.GetTodayAttendanceAsync(id);
             var employee = await _employeeService.GetEmployeeById(id);
+            var overtime = await _attendanceService.GetTodayOvertime(id);
+
 
             var model = new AttendanceFormViewModel
             {
                 EmployeeId = id,
                 EmployeeName = employee?.Name ?? "N/A",
+                //attendance
                 AttendanceDate = attendance?.AttendanceDate ?? DateTime.Today,
                 AttendanceStatus = attendance?.AttendanceStatus,
+                //overtime
+                TotalOvertimeHours = overtime?.TotalOvertimeHours,
+                AdvancePay = overtime?.AdvancePay,
+                Bonus = overtime?.Bonus,
+                Deducation = overtime?.Deducation,
             };
-
             return PartialView("_Add", model);
         }
 
@@ -56,8 +63,6 @@ namespace App.Admin.Web.Areas.Admin.Controllers
 
             return PartialView("_Summery", model);
         }
-
-
         [HttpPost]
         public async Task<IActionResult> Add(AttendanceFormViewModel model)
         {
@@ -67,7 +72,6 @@ namespace App.Admin.Web.Areas.Admin.Controllers
             await _attendanceService.SaveOrUpdateAttendance(model, userId); 
             return RedirectToAction("List");
         }
-
 
     }
 }

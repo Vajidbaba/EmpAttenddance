@@ -2,6 +2,7 @@
 using Common.Data.Models;
 using Common.Data.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Common.Core.Services
 {
@@ -76,6 +77,7 @@ namespace Common.Core.Services
                         DateOfJoining = entity.DateOfJoining,
                         DateOfResign = entity.DateOfResign,
                         City = entity.City,
+                        OTtype = entity.OTtype,
                         State = entity.State,
                         Pin = entity.Pin,
                         Address = entity.Address,
@@ -111,6 +113,7 @@ namespace Common.Core.Services
                     entity.State = model.State;
                     entity.Pin = model.Pin;
                     entity.Address = model.Address;
+                    entity.OTtype = model.OTtype;
                     _dbcontext.Update(entity);
                     _dbcontext.SaveChanges();
                     return true;

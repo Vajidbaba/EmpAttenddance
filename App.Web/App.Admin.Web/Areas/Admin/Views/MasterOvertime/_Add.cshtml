@@ -1,0 +1,35 @@
+﻿@model OvertimeMaster
+<div class="card shadow-sm rounded-2">
+    <div class="card-header rounded-top bg-dark  text-white text-sm px-3 py-1">
+        <div class="text-white text-sm fw-bold">Add Master</div>
+    </div>
+    <div class="card-body p-3">
+        <form asp-action="AddOrEdit" method="post" id="overtimeForm">
+            <input type="hidden" asp-for="Id" />
+            <div class="mb-3">
+                <label asp-for="Type"></label>
+                <input asp-for="Type" class="form-control" />
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="RatePerHour"></label>
+                <input asp-for="RatePerHour" class="form-control" />
+                <span asp-validation-for="RatePerHour" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+            </div>
+
+            <div class="mb-3 form-check">
+                <label class="form-check-label" for="Active">Active</label>
+                <input type="checkbox" asp-for="Active" class="form-check-input" />
+            </div>
+
+            <button type="submit" class="btn btn-sm mb-0 btn-success">Save</button>
+            <button type="button" class="btn btn-dark btn-sm mb-0" data-bs-dismiss="offcanvas">Cancel</button>
+
+        </form>
+
+    </div>
+</div>

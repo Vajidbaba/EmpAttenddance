@@ -1,0 +1,104 @@
+﻿@model List<OvertimeMaster>
+@{
+    ViewData["Title"] = "Master Overtime";
+}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
+
+<div class="card rounded-2 my-3">
+    <div class="card-header rounded-top bg-dark text-white text-sm px-3 py-1 d-flex align-items-center">
+        <h6 class="mb-0 text-white text-sm me-auto"> Attendance</h6>
+        <a onclick="AddOrEdit(0)" class="btn btn-light btn-sm py-1 rounded-1 px-3 m-0 ms-auto"> <i class="fa fa-list me-2"></i> Add New</a>
+    </div>
+    <div class="card-body p-1">
+        <div class="table-responsive" style="border:1px solid #ddd">
+            <table id="overtimeFormtable" class="table table-sm table-striped table-hover mb-0 dt-responsive nowrap w-100 small align-middle">
+                <thead>
+                    <tr>
+                        <th class="p-1 ps-2">Type</th>
+                        <th class="p-1 ps-2">Rate</th>
+                        <th class="p-1 ps-2">Description</th>
+                        <th class="p-1 ps-2">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="p-1 ps-2">@item.Type</td>
+                            <td class="p-1 ps-2">@item.RatePerHour</td>
+                            <td class="p-1 ps-2">@item.Description</td>
+                            <td class="p-1 ps-2">
+                                <a href="javascript:void(0);" onclick="AddOrEdit(@item.Id)" class="btn btn-warning btn-sm mb-0 px-3 py-1">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Offcanvas Summery -->
+<div class="offcanvas offcanvas-end w-50" tabindex="-1" id="masterovertime" aria-labelledby="summeryContent">
+    <div class="offcanvas-body" id="overtimeModalContent">
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('overtimeFormtable').DataTable({
+                responsive: true
+            });
+        });
+
+        $("#overtimeForm").submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            //var url = form.attr("action");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/admin/masterovertime/addoredit")',
+                data: form.serialize(),
+                success: function(response) {
+                    if(response.success){
+                        alert(response.message);
+                        var offcanvasEl = document.getElementById('attModal');
+                        var offcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
+                        offcanvas.hide();
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function() {
+                    alert("Something went wrong");
+                }
+            });
+        });
+
+        function AddOrEdit(id) {
+            $.ajax({
+                url: '@Url.Content("~/admin/masterovertime/addoredit")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $("#overtimeModalContent").html(result);
+                    var offcanvas = new bootstrap.Offcanvas(document.getElementById('masterovertime'));
+                    offcanvas.show();
+                },
+                error: function () {
+                    $("#overtimeModalContent").html('<p class="text-danger">❌ Failed to load details.</p>');
+                }
+            });
+        }
+
+    </script>
+}

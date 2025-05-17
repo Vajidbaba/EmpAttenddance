@@ -2,6 +2,7 @@
 using Common.Data.Context;
 using Common.Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace App.Admin.Web.Areas.Admin.Controllers
 {
@@ -11,11 +12,13 @@ namespace App.Admin.Web.Areas.Admin.Controllers
         private readonly IEmployeeService _employeeService;
         private readonly IContextHelper _contextHelper;
         private readonly LogisticContext _dbcontext;
+        private readonly IMasterOvertimeService _overtimeService;
 
-        public EmployeesController(IEmployeeService employeeService, LogisticContext dbcontext, IContextHelper contextHelper)
+        public EmployeesController(IMasterOvertimeService overtimeService, IEmployeeService employeeService, LogisticContext dbcontext, IContextHelper contextHelper)
         {
             _employeeService = employeeService;
             _dbcontext = dbcontext;
+            _overtimeService = overtimeService;
             _contextHelper = contextHelper;
         }
 
@@ -23,18 +26,16 @@ namespace App.Admin.Web.Areas.Admin.Controllers
         public async Task<IActionResult> List()
         {
             var employees = await _employeeService.GetAllEmployees();
-
-            if (employees == null || employees.Count == 0)
-            {
-                ViewBag.Message = "No employees found.";
-                return View(new List<EmployeeModel>());
-            }
-
+          
             return View(employees);
         }
+
+
         [HttpGet]
         public IActionResult AddOrUpdate(int? Id)
         {
+            var overtimeTypes = _overtimeService.GetDropdownListAsync();
+            ViewBag.OvertimeTypes = overtimeTypes;
             EmployeeModel model = Id.HasValue ? _employeeService.GetEmployeeDetails(Id) : new EmployeeModel();
             return View(model);
         }

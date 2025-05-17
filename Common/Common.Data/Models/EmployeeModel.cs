@@ -17,5 +17,6 @@ namespace Common.Data.Models
         public string? State { get; set; }
         public string? Pin { get; set; }
         public string? Address { get; set; }
+        public int? OTtype { get; set; }
     }
 }

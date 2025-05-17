@@ -21,6 +21,7 @@ namespace Common.Core.Services
         Task<MarkAttendance?> GetTodayAttendanceAsync(int Id);
         Task<List<EmployeeWithAttendanceStatus>> GetEmployeesWithTodayAttendanceAsync();
         Task<List<MarkAttendance>> GetAttendanceSummery();
+        Task<OvertimeRecords?> GetTodayOvertime(int Id);
     }
     public class AttendanceService : IAttendanceService
     {
@@ -36,6 +37,7 @@ namespace Common.Core.Services
         }
         public async Task SaveOrUpdateAttendance(AttendanceFormViewModel model, string userId)
         {
+            // Attendance Save/Update
             var attendance = await _dbcontext.MarkAttendance
                 .FirstOrDefaultAsync(a => a.EmployeeId == model.EmployeeId && a.AttendanceDate.Date == model.AttendanceDate.Date);
 
@@ -57,13 +59,54 @@ namespace Common.Core.Services
                 attendance.AttendanceStatus = model.AttendanceStatus;
                 _dbcontext.MarkAttendance.Update(attendance);
             }
+
+            // Overtime Save/Update
+            var overtime = await _dbcontext.OvertimeRecords
+                .FirstOrDefaultAsync(o => o.EmployeeId == model.EmployeeId && o.Date.Value.Date == model.AttendanceDate.Date);
+
+            if (overtime == null)
+            {
+                overtime = new OvertimeRecords
+                {
+                    EmployeeId = model.EmployeeId,
+                    Date = model.AttendanceDate,
+                    TotalOvertimeHours = model.TotalOvertimeHours,
+                    AdvancePay = model.AdvancePay,
+                    Bonus = model.Bonus,
+                    Deducation = model.Deducation,
+                    AddedBy = userId,
+                    AddedOn = DateTime.Now,
+                    Active = true
+                };
+                _dbcontext.OvertimeRecords.Add(overtime);
+            }
+            else
+            {
+                overtime.TotalOvertimeHours = model.TotalOvertimeHours;
+                overtime.AdvancePay = model.AdvancePay;
+                overtime.Bonus = model.Bonus;
+                overtime.Deducation = model.Deducation;
+                overtime.UpdatedBy = userId;
+                overtime.UpdatedOn = DateTime.Now;
+                _dbcontext.OvertimeRecords.Update(overtime);
+            }
+
             await _dbcontext.SaveChangesAsync();
         }
+
         public async Task<MarkAttendance?> GetTodayAttendanceAsync(int Id)
         {
             return await _dbcontext.MarkAttendance
                 .FirstOrDefaultAsync(a => a.EmployeeId == Id && a.AttendanceDate.Date == DateTime.Today);
         }
+        public async Task<OvertimeRecords?> GetTodayOvertime(int Id)
+        {
+            return await _dbcontext.OvertimeRecords.FirstOrDefaultAsync(a =>
+                    a.EmployeeId == Id &&
+                    a.Date.HasValue &&
+                    a.Date.Value.Date == DateTime.Today);
+        }
+
         public async Task<List<MarkAttendance>> GetAttendanceSummery()
         {
             return await _dbcontext.MarkAttendance.Where(x => x.Active).ToListAsync();
