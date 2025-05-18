@@ -1,4 +1,5 @@
-﻿@model Common.Core.ViewModels.EmployeeSalaryViewModel
+﻿@model List<Common.Core.ViewModels.SalaryViewModel>
+@using System.Globalization
 @{
     ViewData["Title"] = "Salaries";
 }
@@ -9,37 +10,57 @@
         <h6 class="mb-0 text-white text-sm me-auto">
             @ViewData["Title"]
         </h6>
-        @* <a href="@Url.Action("addorupdate", "salaries")" class="btn btn-light btn-sm py-1 rounded-1 px-3 m-0 ms-auto"> <i class="fa fa-plus me-2"></i> Add Salaries</a> *@
+        <a href="javascript:void(0);" onclick="getAdd(0)" class="btn btn-light btn-sm py-1 rounded-1 px-3 m-0 ms-auto">
+            <i class="fa fa-plus me-2"></i> Add Salaries
+        </a>
     </div>
     <div class="card-body p-1">
         <div class="table-responsive" style="border:1px solid #ddd">
             <table id="employeesTable" class="table table-sm table-striped table-hover mb-0 dt-responsive nowrap w-100 small align-middle">
                 <thead>
                     <tr>
-                        <th class="p-1 ps-2">ID</th>
-                        <th class="p-1 ps-2">Name</th>
-                        <th class="p-1 ps-2">Department</th>
-                        <th class="p-1 ps-2">Role</th>
+                        <th class="p-1 ps-2">Employee ID</th>
+                        <th class="p-1 ps-2">Month</th>
                         <th class="p-1 ps-2">Base Salary</th>
-                        <th class="p-1 ps-2">Overtime Pay</th>
+                        <th class="p-1 ps-2">OT Pay</th>
+                        <th class="p-1 ps-2">Bonus</th>
+                        <th class="p-1 ps-2">Advance</th>
+                        <th class="p-1 ps-2">Deduction</th>
                         <th class="p-1 ps-2">Net Salary</th>
+                        <th class="p-1 ps-2">Payment Date</th>
+                        <th class="p-1 ps-2">Status</th>
                         <th class="p-1 ps-2">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var employee in Model.Employees)
+                    @foreach (var item in Model)
                     {
                         <tr>
-                            <td class="p-1 ps-2">@employee.Id</td>
-                            <td class="p-1 ps-2">@employee.Name</td>
-                            <td class="p-1 ps-2">@employee.Department</td>
-                            <td class="p-1 ps-2">@employee.Role</td>
-                            <td class="p-1 ps-2">@Model.SalaryList.FirstOrDefault(s => s.EmployeeId == employee.Id)?.BaseSalary ?? 0</td>
-                            <td class="p-1 ps-2">@Model.SalaryList.FirstOrDefault(s => s.EmployeeId == employee.Id)?.OvertimePay ?? 0</td>
-                            <td class="p-1 ps-2">@Model.SalaryList.FirstOrDefault(s => s.EmployeeId == employee.Id)?.NetSalary ?? 0</td>
+                            <td class="p-1 ps-2">@item.EmployeeId</td>
+                            <td class="p-1 ps-2">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(item.Month) @item.Year</td>
+                            <td class="p-1 ps-2">@item.BaseSalary.ToString("C")</td>
+                            <td class="p-1 ps-2">@item.OvertimePay.ToString("C")</td>
+                            <td class="p-1 ps-2">@item.Bonus.ToString("C")</td>
+                            <td class="p-1 ps-2">@item.Advance.ToString("C")</td>
+                            <td class="p-1 ps-2">@item.Deduction.ToString("C")</td>
+                            <td class="p-1 ps-2"><strong>@item.NetSalary.ToString("C")</strong></td>
+                            <td class="p-1 ps-2">@item.PaymentDate.ToString("dd-MMM-yyyy")</td>
                             <td class="p-1 ps-2">
-                                <a href="javascript:void(0);" class="btn btn-dark btn-sm mb-0 px-3 py-1" onclick="openSalaryModal(@employee.Id)">
+                                @if (item.IsPaid)
+                                {
+                                    <span class="badge bg-success">Paid</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                }
+                            </td>
+                            <td class="p-1 ps-2">
+                                <a href="javascript:void(0);" class="btn btn-dark btn-sm mb-0 px-3 py-1" onclick="Add(@item.Id)">
                                     <i class="fa fa-edit"></i>
+                                </a>
+                                <a href="javascript:void(0);" class="btn btn-primary btn-sm mb-0 px-3 py-1" onclick="calculateSalary(@item.Id)">
+                                    <i class="fa fa-calculator"></i>
                                 </a>
                             </td>
                         </tr>
@@ -50,69 +71,90 @@
     </div>
 
 </div>
-<!-- Details -->
-<div class="offcanvas offcanvas-end" tabindex="-1" id="employeeModal" aria-labelledby="employeeDetailsLabel">
-    <div class="offcanvas-header">
-        <h5 id="employeeDetailsLabel">Employee Attendance</h5>
-        <button type="button" class="btn btn-dark text-white btn-icon-only rounded-circle" data-bs-dismiss="offcanvas"> <i class="fa fa-close"></i></button>
-    </div>
-    <div class="offcanvas-body" id="employeeDetailsContent">
-        <div class="text-center">
-            <div class="spinner-border text-primary" role="status"></div>
-            <p class="mt-2">Loading...</p>
-        </div>
+<!-- Offcanvas Summery -->
+<div class="offcanvas offcanvas-end w-50" tabindex="-1" id="salaryId" aria-labelledby="salaryContent">
+    <div class="offcanvas-body" id="salaryContent">
     </div>
 </div>
-
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
     <script>
-          $(document).ready(function () {
+        $(document).ready(function () {
             $('#employeesTable').DataTable({
                 responsive: true,
                 lengthChange: false,
                 autoWidth: false
             });
         });
-          function openSalaryModal(id) {
-            const offcanvas = new bootstrap.Offcanvas(document.getElementById('employeeModal'));
-            $("#employeeDetailsContent").html(`
-                <div class="text-center">
-                    <div class="spinner-border text-primary" role="status"></div>
-                    <p class="mt-2">Loading...</p>
-                </div>
-            `);
+
+        function calculateSalary(id) {
             $.ajax({
-                url: '@Url.Content("~/admin/salaries/getsalary")',
+                type: "POST",
+                url: '@Url.Action("GetUpdatedSalaryTable", "Salaries", new { area = "admin" })',
+                data: { id: id },
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert("❌ Failed to save salary.");
+                    }
+                },
+                error: function () {
+                    alert("❌ Something went wrong while saving salary.");
+                }
+            });
+        }
+
+
+          function getAdd(id) {
+            $.ajax({
+                url: '@Url.Content("~/admin/salaries/getaddorupdate")',
                 type: 'GET',
                 data: { id: id },
-                success: function(result) {
-                    $("#employeeDetailsContent").html(result);
+                success: function (result) {
+                    $("#salaryContent").html(result);
+                    var offcanvas = new bootstrap.Offcanvas(document.getElementById('salaryId'));
                     offcanvas.show();
                 },
+                error: function () {
+                    $("#salaryContent").html('<p class="text-danger">❌ Failed to load details.</p>');
+                }
+            });
+        }
+
+            $("form").submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr("action");
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(),
+                success: function(response) {
+                    if(response.success){
+                        alert(response.message);
+                        var offcanvasEl = document.getElementById('salaryId');
+                        var offcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
+                        offcanvas.hide();
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
                 error: function() {
-                    $("#employeeDetailsContent").html('<p class="text-danger">❌ Failed to load details.</p>');
+                    alert("Something went wrong");
                 }
             });
-        }
+        });
+              $(document).on("input", "#BaseSalary", function () {
+                        var base = parseFloat($(this).val()) || 0;
+                        var overtime = parseFloat($("#OvertimePay").val()) || 0;
+                        var deduction = parseFloat($("#Deductions").val()) || 0;
+                        $("#NetSalary").val(base + overtime - deduction);
+                    });
 
-        function saveSalary() {
-            var salaryData = {
-                EmployeeId: $("#salaryEmployeeId").val(),
-                BaseSalary: $("#baseSalary").val(),
-                OvertimePay: $("#overtimePay").val(),
-                Deductions: $("#deductions").val()
-            };
-
-            $.post("/Salary/UpdateSalary", salaryData, function(response) {
-                if (response.success) {
-                    location.reload();
-                } else {
-                    alert("Error updating salary!");
-                }
-            });
-        }
     </script>
 }

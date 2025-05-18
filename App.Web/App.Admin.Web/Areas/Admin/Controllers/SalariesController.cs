@@ -12,9 +12,7 @@ namespace App.Admin.Web.Areas.Admin.Controllers
         private readonly IEmployeeService _employeeService;
         private readonly IContextHelper _contextHelper;
         private readonly ISalariesService _salaryService;
-
         private readonly LogisticContext _dbcontext;
-        
         public SalariesController(ISalariesService salaryService, IEmployeeService employeeService, LogisticContext dbcontext, IContextHelper contextHelper)
         {
             _employeeService = employeeService;
@@ -25,32 +23,55 @@ namespace App.Admin.Web.Areas.Admin.Controllers
 
         public async Task<IActionResult> List()
         {
-            var model = new EmployeeSalaryViewModel
-            {
-                Employees = await _employeeService.GetAllEmployees(),
-                SalaryList = await _salaryService.GetAllSalaries()
-            };
+            var model = await _salaryService.GetAllSalariesWithEmployeeNameAsync();
             return View(model);
         }
-        public IActionResult AddOrUpdate()
-        {
-            return View();
-        }
-
-
-        [HttpGet]
-        public async Task<IActionResult> GetSalary(int id)
-        {
-            var salary = await _salaryService.GetSalaryByEmployeeId(id);
-            return PartialView("_add", salary);
-        }
-
 
         [HttpPost]
-        public async Task<IActionResult> UpdateSalary(Salaries salary)
+        public async Task<IActionResult> PostAddOrUpdate(SalaryViewModel model)
         {
-            bool success = await _salaryService.UpdateSalary(salary);
-            return Json(new { success });
+            try
+            {
+                var result = await _salaryService.AddOrUpdateSalaryAsync(model);
+                return Json(new { success = true, message = "✅ Salary saved successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        [HttpGet]
+        public IActionResult GetAddOrUpdate(int id)
+        {
+            if (id == 0)
+            {
+                return PartialView("_Add", new SalaryViewModel());
+            }
+
+            var salary = _dbcontext.Salaries.FirstOrDefault(x => x.Id == id);
+
+            if (salary == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new SalaryViewModel
+            {
+                Id = salary.Id,
+                EmployeeId = salary.EmployeeId,
+                Month = salary.Month,
+                Year = salary.Year,
+                BaseSalary = salary.BaseSalary,
+                OvertimePay = salary.OvertimePay,
+                Bonus = salary.Bonus,
+                Advance = salary.Advance,
+                Deduction = salary.Deduction,
+                NetSalary = salary.NetSalary,
+                PaymentDate = salary.PaymentDate,
+                IsPaid = salary.IsPaid
+            };
+
+            return PartialView("_Add", viewModel);
         }
     }
 }
