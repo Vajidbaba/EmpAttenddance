@@ -23,6 +23,10 @@ namespace Common.Data.Context
         public DbSet<OvertimeRecords> OvertimeRecords { get; set; }
         public DbSet<MarkAttendance> MarkAttendance { get; set; }
         public DbSet<OvertimeMaster> OvertimeMaster { get; set; }
+        public DbSet<Leaves> Leaves { get; set; }
+        public DbSet<LeaveMaster> LeaveMaster { get; set; }
+
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

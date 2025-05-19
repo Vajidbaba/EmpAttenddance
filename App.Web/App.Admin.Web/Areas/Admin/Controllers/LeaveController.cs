@@ -1,65 +1,56 @@
 ﻿using Common.Core.Services;
+using Common.Core.ViewModels;
 using Common.Data.Context;
 using Common.Data.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace App.Admin.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class LeaveController : BaseController
+    public class LeaveMasterController : BaseController
     {
         private readonly ILeaveService _leaveService;
         private readonly IContextHelper _contextHelper;
         private readonly LogisticContext _dbcontext;
 
-        public LeaveController(ILeaveService leaveService, IContextHelper contextHelper, LogisticContext dbcontext)
+        public LeaveMasterController(ILeaveService leaveService, IContextHelper contextHelper, LogisticContext dbcontext)
         {
             _dbcontext = dbcontext;
             _leaveService = leaveService;
             _contextHelper = contextHelper;
 
         }
-
+        [HttpGet]
         public async Task<IActionResult> List()
         {
-            ViewBag.EmployeeLists = _dbcontext.LeaveRequests.ToList();
-
-            var leaves = await _leaveService.GetAllLeaveRequests();
+            var leaves = await _leaveService.AllLeaveMasterAsync();
             return View(leaves);
         }
-
         [HttpGet]
-        public IActionResult Apply()
+        public async Task<IActionResult> SaveLeaveMaster(int id)
         {
-            ViewBag.EmployeeList = _dbcontext.Employees.Select(e => new EmployeeModel { Id = e.Id, Name = e.Name })
-    .ToList();
-            return View(new LeaveRequests());
+            var model = await _leaveService.GetMasterById(id);
+            return PartialView("_AddOrEdit", model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveLeaveMaster(LeaveMaster model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            try
+            {
+                var userId = _contextHelper.GetUsername();
+                var result = await _leaveService.SaveMaster(model, userId);
+                return RedirectToAction("List");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(model);
+            }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Apply(LeaveRequests leave)
-        {
-          
-            await _leaveService.ApplyLeave(leave);
-            Toast("Leave Request Submitted!", ToastType.SUCCESS);
-            return RedirectToAction("List", "Leave");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Approve(int id)
-        {
-            await _leaveService.ApproveLeave(id, _contextHelper.GetUsername());
-            Toast("Leave Approved!", ToastType.SUCCESS);
-            return RedirectToAction("List", "Leave");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Reject(int id)
-        {
-            await _leaveService.RejectLeave(id, _contextHelper.GetUsername());
-            Toast("Leave Rejected!", ToastType.ERROR);
-            return RedirectToAction("List", "Leave");
-        }
     }
 }

@@ -5,6 +5,7 @@ using Common.Data.Repositories.Contracts;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using static Common.Core.Services.IEmployeeService;
+using static Common.Core.Services.ILeaveService;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Common.Data.Models.LeaveMaster>
+@{
+    ViewData["Title"] = "Leave List";
+}
+<h2>Leaves</h2>
+<button class="btn btn-primary" onclick="openLeaveModal(0)">Add Leave</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Department</th>
+            <th>SickLeaves</th>
+            <th>CasualLeaves</th>
+            <th>PaidLeaves</th>
+            <th>UnpaidLeaves</th>
+            <th>Year</th>
+            <th>Action</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var leave in Model)
+        {
+            <tr>
+                <td>@leave.Department</td>
+                <td>@leave.SickLeaves</td>
+                <td>@leave.CasualLeaves</td>
+                <td>@leave.PaidLeaves</td>
+                <td>@leave.UnpaidLeaves</td>
+                <td>@leave.Year</td>
+                <td>
+                    <button class="btn btn-sm btn-info" onclick="openLeaveModal(@leave.Id)">Edit</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<!-- Details -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="leaveModalContainerId" aria-labelledby="employeeDetailsLabel">
+    <div class="offcanvas-body" id="leaveModalContainer">
+    </div>
+</div>
+<div id="leaveModalContainer"></div>
+
+@section Scripts {
+    <script>
+           $("form").submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr("action");
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(),
+                success: function(response) {
+                    if(response.success){
+                        alert(response.message);
+                        var offcanvasEl = document.getElementById('attModal');
+                        var offcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
+                        offcanvas.hide();
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function() {
+                    alert("Something went wrong");
+                }
+            });
+        });
+          function openLeaveModal(id) {
+            const offcanvas = new bootstrap.Offcanvas(document.getElementById('leaveModalContainerId'));
+            $.ajax({
+                url: '@Url.Content("~/admin/leavemaster/saveleavemaster")',
+                type: 'GET',
+                data: { id: id },
+                success: function(result) {
+                    $("#leaveModalContainer").html(result);
+                    offcanvas.show();
+                },
+                error: function() {
+                    $("#leaveModalContainer").html('<p class="text-danger">❌ Failed to load details.</p>');
+                }
+            });
+        }
+    </script>
+}

@@ -1,95 +1,72 @@
 ﻿using Common.Data.Context;
 using Common.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Common.Core.Services
 {
     public interface ILeaveService
     {
-        Task<List<LeaveRequests>> GetAllLeaveRequests();
-        Task<LeaveRequests> GetLeaveRequestById(int id);
-        Task<bool> ApplyLeave(LeaveRequests leave);
-        Task<bool> ApproveLeave(int id, string approvedBy);
-        Task<bool> RejectLeave(int id, string rejectedBy);
-    }
-    public class LeaveService : ILeaveService
-    {
-        private readonly LogisticContext _dbcontext;
-        private readonly IContextHelper _contextHelper;
+        Task<List<LeaveMaster>> AllLeaveMasterAsync();
+        Task<LeaveMaster> SaveMaster(LeaveMaster leaveMaster, string userId);
+        Task<LeaveMaster> GetMasterById(int id);
 
-        public LeaveService(LogisticContext dbcontext, IContextHelper contextHelper)
+        public class LeaveService : ILeaveService
         {
-            _dbcontext = dbcontext;
-            _contextHelper = contextHelper;
-        }
+            private readonly LogisticContext _dbcontext;
+            private readonly IContextHelper _contextHelper;
 
-        public async Task<List<LeaveRequests>> GetAllLeaveRequests()
-        {
-            var leaveRequests = await _dbcontext.LeaveRequests.ToListAsync();
-
-            return leaveRequests;
-        }
-
-        public async Task<LeaveRequests> GetLeaveRequestById(int id)
-        {
-            return await _dbcontext.LeaveRequests.FirstOrDefaultAsync(l => l.Id == id);
-        }
-
-        public async Task<bool> ApplyLeave(LeaveRequests leave)
-        {
-            var userId = _contextHelper.GetUsername();
-            var newRequest = new LeaveRequests
+            public LeaveService(LogisticContext dbcontext, IContextHelper contextHelper)
             {
-                EmployeeId = leave.EmployeeId,
-                LeaveType = leave.LeaveType,
-                StartDate = leave.StartDate,
-                TotalDays = leave.TotalDays,
-                EndDate = leave.EndDate,
-                Status = "Pending",
-                Reason = leave.Reason,
-                AddedBy = "admin",
-                UpdatedBy = "admin",
-                AddedOn = DateTime.Now,
-                UpdatedOn = DateTime.Now,
-                ApprovedBy ="admin",
-                ApprovedOn = DateTime.Now,
-            };
+                _dbcontext = dbcontext;
+                _contextHelper = contextHelper;
+            }
+            public async Task<List<LeaveMaster>> AllLeaveMasterAsync()
+            {
+                int currentYear = DateTime.Now.Year;
+                var data = await _dbcontext.LeaveMaster
+                    .Where(x => x.Active == true && x.Year == currentYear)
+                    .ToListAsync();
 
-            _dbcontext.LeaveRequests.Add(newRequest);
-            await _dbcontext.SaveChangesAsync();
-            return true;
-        }
+                return data;
+            }
 
-        public async Task<bool> ApproveLeave(int id, string approvedBy)
-        {
-            var request = await _dbcontext.LeaveRequests.FirstOrDefaultAsync(l => l.Id == id);
-            if (request == null) return false;
 
-            request.Status = "Approved";
-            request.ApprovedBy = approvedBy;
-            request.ApprovedOn = DateTime.Now;
+            public async Task<LeaveMaster> GetMasterById(int id)
+            {
+                var result = await _dbcontext.LeaveMaster.FirstOrDefaultAsync(s => s.Id == id);
+                return result;
+            }
+            public async Task<LeaveMaster> SaveMaster(LeaveMaster leaveMaster, string userId)
+            {
+                if (leaveMaster.Id == 0)
+                {
+                    leaveMaster.AddedBy = userId;
+                    leaveMaster.AddedOn = DateTime.UtcNow;
+                    leaveMaster.Active = true;
+                    _dbcontext.LeaveMaster.Add(leaveMaster);
+                }
+                else
+                {
+                    var existing = await _dbcontext.LeaveMaster.FindAsync(leaveMaster.Id);
+                    if (existing == null || existing.Active == false)
+                        throw new Exception("Record not found or inactive");
 
-            _dbcontext.LeaveRequests.Update(request);
-            await _dbcontext.SaveChangesAsync();
-            return true;
-        }
+                    existing.Department = leaveMaster.Department;
+                    existing.SickLeaves = leaveMaster.SickLeaves;
+                    existing.CasualLeaves = leaveMaster.CasualLeaves;
+                    existing.PaidLeaves = leaveMaster.PaidLeaves;
+                    existing.UnpaidLeaves = leaveMaster.UnpaidLeaves;
+                    existing.Year = leaveMaster.Year;
+                    existing.Active = leaveMaster.Active;
+                    existing.UpdatedOn = DateTime.UtcNow;
+                    existing.UpdatedBy = userId;
+                    _dbcontext.LeaveMaster.Update(existing);
 
-        public async Task<bool> RejectLeave(int id, string rejectedBy)
-        {
-            var request = await _dbcontext.LeaveRequests.FirstOrDefaultAsync(l => l.Id == id);
-            if (request == null) return false;
+                }
 
-            request.Status = "Rejected";
-            request.ApprovedBy = rejectedBy;
-            request.ApprovedOn = DateTime.Now;
-
-            _dbcontext.LeaveRequests.Update(request);
-            await _dbcontext.SaveChangesAsync();
-            return true;
+                await _dbcontext.SaveChangesAsync();
+                return leaveMaster;
+            }
         }
     }
 }
