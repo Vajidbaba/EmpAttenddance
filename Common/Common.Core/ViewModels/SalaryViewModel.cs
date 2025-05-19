@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.Core.ViewModels
+﻿namespace Common.Core.ViewModels
 {
     public class SalaryViewModel
     {
@@ -26,6 +20,7 @@ namespace Common.Core.ViewModels
         public decimal Advance { get; set; }
         public decimal Deduction { get; set; }
         public decimal NetSalary { get; set; }
+        public int? OTtype { get; set; }
     }
 
 }

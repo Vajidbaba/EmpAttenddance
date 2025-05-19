@@ -15,6 +15,11 @@ namespace Common.Core.Services
         Task<List<Salaries>> GetMonthSalariesList();
         Task<List<SalaryViewModel>> GetAllSalariesWithEmployeeNameAsync();
         Task<bool> AddOrUpdateSalaryAsync(SalaryViewModel model);
+        Task<SalaryViewModel> CalculateSalary(int employeeId);
+
+        Task<SalaryViewModel> GetSalaryDetailsAsync(int employeeId, int year, int month);
+        Task SaveSalaryAsync(SalaryViewModel model);
+
     }
     public class SalariesService : ISalariesService
     {
@@ -66,7 +71,6 @@ namespace Common.Core.Services
                 };
                 await _dbcontext.Salaries.AddAsync(entity);
             }
-
             entity.EmployeeId = model.EmployeeId;
             entity.Month = model.Month;
             entity.Year = model.Year;
@@ -78,39 +82,72 @@ namespace Common.Core.Services
             entity.NetSalary = model.NetSalary;
             entity.PaymentDate = model.PaymentDate;
             entity.IsPaid = model.IsPaid;
-
             await _dbcontext.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<SalaryViewModel> CalculateSalary(int employeeId)
+        {
+            int currentMonth = DateTime.Now.Month;
+            int currentYear = DateTime.Now.Year;
+
+            var employees = await _dbcontext.Employees.ToListAsync();
+            var salaries = await _dbcontext.Salaries.ToListAsync();
+
+            var result = (from e in employees
+                          join s in salaries on e.Id equals s.EmployeeId into empSalaries
+                          from sal in empSalaries.DefaultIfEmpty()
+                          select new SalaryViewModel
+                          {
+                              EmployeeId = e.Id,
+                              EmployeeName = e.Name,
+                              BaseSalary = e.BaseSalary,
+                              NetSalary = sal?.NetSalary ?? 0,
+                              OvertimeHours = sal?.OvertimeHours ?? 0,
+                              WorkingDays = sal?.WorkingDays ?? 0,
+                              PresentDays = sal?.PresentDays ?? 0,
+                              OvertimePay = sal?.OvertimePay ?? 0,
+                              Deduction = sal?.Deduction ?? 0,
+                              Year = sal?.Year ?? 0,
+                              Month = sal?.Month ?? 0,
+                              IsPaid = sal?.IsPaid ?? false,
+                          }).OrderBy(x => x.EmployeeName).FirstOrDefault();
+
+
+            return result;
         }
 
 
         public async Task<List<SalaryViewModel>> GetAllSalariesWithEmployeeNameAsync()
         {
-            return await (from s in _dbcontext.Salaries
-                          join e in _dbcontext.Employees on s.EmployeeId equals e.Id
+            int currentMonth = DateTime.Now.Month;
+            int currentYear = DateTime.Now.Year;
+
+            var employees = await _dbcontext.Employees.ToListAsync();
+            var salaries = await _dbcontext.Salaries
+                // .Where(s => s.Month == currentMonth && s.Year == currentYear)
+                .ToListAsync();
+
+            var result = (from e in employees
+                          join s in salaries on e.Id equals s.EmployeeId into empSalaries
+                          from sal in empSalaries.DefaultIfEmpty()
                           select new SalaryViewModel
                           {
-                              Id = s.Id,
-                              EmployeeId = s.EmployeeId,
+                              EmployeeId = e.Id,
                               EmployeeName = e.Name,
-                              Year = s.Year,
-                              Month = s.Month,
-                              PaymentDate = s.PaymentDate,
-                              BaseSalary = s.BaseSalary,
-                              WorkingDays = s.WorkingDays,
-                              PresentDays = s.PresentDays,
-                              AbsentDays = s.AbsentDays,
-                              LeaveDays = s.LeaveDays,
-                              IsPaid = s.IsPaid,
-                              OvertimeHours = s.OvertimeHours,
-                              OvertimePay = s.OvertimePay,
-                              Bonus = s.Bonus,
-                              Advance = s.Advance,
-                              Deduction = s.Deduction,
-                              NetSalary = s.NetSalary
-                          }).OrderByDescending(x => x.Year)
-                            .ThenByDescending(x => x.Month)
-                            .ToListAsync();
+                              BaseSalary = e.BaseSalary,
+                              NetSalary = sal?.NetSalary ?? 0,
+                              OvertimeHours = sal?.OvertimeHours ?? 0,
+                              WorkingDays = sal?.WorkingDays ?? 0,
+                              PresentDays = sal?.PresentDays ?? 0,
+                              OvertimePay = sal?.OvertimePay ?? 0,
+                              Deduction = sal?.Deduction ?? 0,
+                              Year = sal?.Year ?? 0,
+                              Month = sal?.Month ?? 0,
+                              IsPaid = sal?.IsPaid ?? false,
+                          }).OrderBy(x => x.EmployeeName).ToList();
+
+            return result;
         }
 
         public async Task<List<Salaries>> GetAllSalaries()
@@ -158,5 +195,85 @@ namespace Common.Core.Services
             return true;
         }
 
+        public async Task<SalaryViewModel> GetSalaryDetailsAsync(int employeeId, int year, int month)
+        {
+            var employee = await _dbcontext.Employees
+                .FirstOrDefaultAsync(e => e.Id == employeeId && e.Active);
+
+            if (employee == null) return null;
+
+            var otMaster = await _dbcontext.OvertimeMaster
+                .FirstOrDefaultAsync(x => x.Id == employee.OTtype);
+
+            var attendances = await _dbcontext.MarkAttendance
+                .Where(a => a.EmployeeId == employeeId && a.AttendanceDate.Year == year && a.AttendanceDate.Month == month)
+                .ToListAsync();
+
+            var overtimes = await _dbcontext.OvertimeRecords
+                .Where(o => o.EmployeeId == employeeId && o.Date.HasValue && o.Date.Value.Year == year && o.Date.Value.Month == month)
+                .ToListAsync();
+
+            int workingDays = attendances.Select(a => a.AttendanceDate.Date).Distinct().Count();
+            int presentDays = attendances.Count(a => a.AttendanceStatus == "Present");
+            int leaveDays = attendances.Count(a => a.AttendanceStatus == "Leave");
+            int absentDays = workingDays - presentDays - leaveDays;
+
+            decimal totalOtHours = overtimes.Sum(x => x.TotalOvertimeHours ?? 0);
+            decimal ratePerHour = otMaster?.RatePerHour ?? 0;
+            decimal overtimePay = totalOtHours * ratePerHour;
+
+            var salaryModel = new SalaryViewModel
+            {
+                EmployeeId = employee.Id,
+                EmployeeName = employee.Name,
+                Year = year,
+                Month = month,
+                PaymentDate = DateTime.Now,
+                BaseSalary = employee.BaseSalary,
+                WorkingDays = workingDays,
+                PresentDays = presentDays,
+                LeaveDays = leaveDays,
+                AbsentDays = absentDays,
+                OvertimeHours = totalOtHours,
+                OvertimePay = overtimePay,
+                Bonus = 0, // Future use
+                Advance = 0,
+                Deduction = 0,
+                NetSalary = employee.BaseSalary + overtimePay, // Bonus - Advance - Deduction handled while saving
+                IsPaid = false,
+                OTtype = employee.OTtype
+            };
+
+            return salaryModel;
+        }
+
+        public async Task SaveSalaryAsync(SalaryViewModel model)
+        {
+            var salary = new Salaries
+            {
+                EmployeeId = model.EmployeeId,
+                Year = model.Year,
+                Month = model.Month,
+                PaymentDate = model.PaymentDate,
+                BaseSalary = model.BaseSalary,
+                WorkingDays = model.WorkingDays,
+                PresentDays = model.PresentDays,
+                AbsentDays = model.AbsentDays,
+                LeaveDays = model.LeaveDays,
+                OvertimeHours = model.OvertimeHours,
+                OvertimePay = model.OvertimePay,
+                Bonus = model.Bonus,
+                Advance = model.Advance,
+                Deduction = model.Deduction,
+                NetSalary = model.BaseSalary + model.OvertimePay + model.Bonus - model.Advance - model.Deduction,
+                Active = true,
+                AddedOn = DateTime.Now,
+                AddedBy = "USR0002", // You can pass this dynamically
+                IsPaid = model.IsPaid
+            };
+
+            _dbcontext.Salaries.Add(salary);
+            await _dbcontext.SaveChangesAsync();
+        }
     }
 }

@@ -81,6 +81,7 @@ namespace Common.Core.Services
                         State = entity.State,
                         Pin = entity.Pin,
                         Address = entity.Address,
+                        BaseSalary = entity.BaseSalary,
                     };
                     _dbcontext.Employees.Add(employee);
                     _dbcontext.SaveChanges();
@@ -114,6 +115,8 @@ namespace Common.Core.Services
                     entity.Pin = model.Pin;
                     entity.Address = model.Address;
                     entity.OTtype = model.OTtype;
+                    entity.BaseSalary = model.BaseSalary;
+
                     _dbcontext.Update(entity);
                     _dbcontext.SaveChanges();
                     return true;

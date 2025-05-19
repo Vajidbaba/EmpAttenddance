@@ -20,11 +20,31 @@ namespace App.Admin.Web.Areas.Admin.Controllers
             _contextHelper = contextHelper;
             _salaryService = salaryService;
         }
-
-        public async Task<IActionResult> List()
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
             var model = await _salaryService.GetAllSalariesWithEmployeeNameAsync();
             return View(model);
+        }
+        [HttpGet]
+        public async Task<IActionResult> CalculateSalary(int id)
+        {
+            var year = DateTime.Now.Year;   
+            var month = DateTime.Now.Month;
+            var model = await _salaryService.GetSalaryDetailsAsync(id, year, month);
+            return PartialView("_AddOrGenerate", model);
+        }
+        [HttpGet]
+        public async Task<IActionResult> AddOrGenerate(int id)
+        {
+            var model = await _salaryService.GetAllSalariesWithEmployeeNameAsync();
+            return View("_AddOrGenerate", model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddOrGenerate(SalaryViewModel model)
+        {
+            var data = await _salaryService.GetAllSalariesWithEmployeeNameAsync();
+            return View("_AddOrGenerate", data);
         }
 
         [HttpPost]
