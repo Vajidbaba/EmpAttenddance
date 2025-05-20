@@ -10,6 +10,7 @@ namespace Common.Data.Models
         public string? Email { get; set; }
         public string? Contact { get; set; }
         public string? Department { get; set; }
+        public int? DepartmentId { get; set; }
         public string? Role { get; set; }
         public DateTime? DateOfJoining { get; set; }
         public DateTime? DateOfResign { get; set; }

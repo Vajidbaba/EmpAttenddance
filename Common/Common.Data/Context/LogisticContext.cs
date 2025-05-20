@@ -25,6 +25,8 @@ namespace Common.Data.Context
         public DbSet<OvertimeMaster> OvertimeMaster { get; set; }
         public DbSet<Leaves> Leaves { get; set; }
         public DbSet<LeaveMaster> LeaveMaster { get; set; }
+        public DbSet<DepartmentMaster> DepartmentMaster { get; set; }
+
 
 
 

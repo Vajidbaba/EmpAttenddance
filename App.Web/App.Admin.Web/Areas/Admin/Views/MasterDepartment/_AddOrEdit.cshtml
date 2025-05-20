@@ -1,0 +1,29 @@
+﻿@model DepartmentMaster
+
+<style>
+    label {
+        margin-bottom: 2px;
+    }
+</style>
+<form asp-action="saveleavemaster" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label class="required">Department Name</label>
+        <input asp-for="Name" type="text" class="form-control form-control-sm" min="0" required />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label class="required">Descriptions</label>
+        <textarea asp-for="Description" type="text" class="form-control form-control-sm" min="0" required></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-end">
+
+            <button type="submit" class="btn btn-dark  btn-sm mb-0 ">Save</button>
+            <button type="button" class="btn btn-light btn-sm mb-0 ms-2" data-bs-dismiss="offcanvas">Cancel</button>
+        </div>
+    </div>
+
+</form>

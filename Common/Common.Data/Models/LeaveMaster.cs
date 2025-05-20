@@ -2,7 +2,7 @@
 {
     public class LeaveMaster : BaseModel
     {
-        public string? Department { get; set; }
+        public int? DepartmentId { get; set; }
         public int? SickLeaves { get; set; }
         public int? CasualLeaves { get; set; }
         public int? PaidLeaves { get; set; }

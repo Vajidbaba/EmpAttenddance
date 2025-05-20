@@ -33,6 +33,7 @@ builder.Services.AddScoped<ILeaveService, LeaveService>();
 builder.Services.AddScoped<ISalariesService, SalariesService>();
 builder.Services.AddScoped<IOvertimeRecordsService, OvertimeRecordsService>();
 builder.Services.AddScoped<IMasterOvertimeService, MasterOvertimeService>();
+builder.Services.AddScoped<IMasterDepartmentService, MasterDepartmentService>();
 
 
 builder.Services.AddSingleton<IContextHelper, ContextHelper>();

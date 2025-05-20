@@ -9,17 +9,19 @@ namespace App.Admin.Web.Areas.Admin.Controllers
     [Area("Admin")]
     public class EmployeesController : BaseController
     {
+        private readonly IMasterDepartmentService _masterDepartmentService;
         private readonly IEmployeeService _employeeService;
         private readonly IContextHelper _contextHelper;
         private readonly LogisticContext _dbcontext;
         private readonly IMasterOvertimeService _overtimeService;
 
-        public EmployeesController(IMasterOvertimeService overtimeService, IEmployeeService employeeService, LogisticContext dbcontext, IContextHelper contextHelper)
+        public EmployeesController(IMasterDepartmentService masterDepartmentService, IMasterOvertimeService overtimeService, IEmployeeService employeeService, LogisticContext dbcontext, IContextHelper contextHelper)
         {
             _employeeService = employeeService;
             _dbcontext = dbcontext;
             _overtimeService = overtimeService;
             _contextHelper = contextHelper;
+            _masterDepartmentService = masterDepartmentService;
         }
 
         #region Employee
@@ -34,9 +36,10 @@ namespace App.Admin.Web.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult AddOrUpdate(int? Id)
         {
+            ViewBag.Departments = _masterDepartmentService.GetDepartmentSelectListAsync();
             var overtimeTypes = _overtimeService.GetDropdownListAsync();
             ViewBag.OvertimeTypes = overtimeTypes;
-            EmployeeModel model = Id.HasValue ? _employeeService.GetEmployeeDetails(Id) : new EmployeeModel();
+            EmployeeModel model =  Id.HasValue ? _employeeService.GetEmployeeDetails(Id) : new EmployeeModel();
             return View(model);
         }
         [HttpPost]

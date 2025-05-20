@@ -16,4 +16,15 @@ namespace Common.Core.ViewModels
         public string Reason { get; set; }
     }
 
+    public class LeaveMasterViewModel
+    {
+        public int? Id { get; set; }
+        public string? DepartmentName { get; set; }
+        public int? SickLeaves { get; set; }
+        public int? CasualLeaves { get; set; }
+        public int? PaidLeaves { get; set; }
+        public int? UnpaidLeaves { get; set; }
+        public int? Year { get; set; }
+    }
+
 }

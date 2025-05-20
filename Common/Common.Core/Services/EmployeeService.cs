@@ -1,4 +1,5 @@
-﻿using Common.Data.Context;
+﻿using Common.Core.ViewModels;
+using Common.Data.Context;
 using Common.Data.Models;
 using Common.Data.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +33,21 @@ namespace Common.Core.Services
             {
                 try
                 {
-                    return await _dbcontext.Employees.Where(x =>x.Active).ToListAsync();
+
+
+                    var data = await _dbcontext.Employees.Where(x => x.Active)
+                        .Join(_dbcontext.DepartmentMaster, emp => emp.DepartmentId, dept => dept.Id, (emp, dept) => new EmployeeModel
+                        {
+                            Id = emp.Id,
+                            Name = emp.Name,
+                            Email = emp.Email,
+                            Contact = emp.Contact,
+                            Active = emp.Active,
+                            Department = dept.Name,
+                        })
+                        .ToListAsync();
+
+                    return data;
                 }
                 catch (Exception)
                 {
@@ -57,7 +72,6 @@ namespace Common.Core.Services
                     throw new Exception("Error fetching last employee ID", ex);
                 }
             }
-
             public int CreateEmployee(EmployeeModel entity)
             {
                 try
@@ -73,6 +87,7 @@ namespace Common.Core.Services
                         Email = entity.Email,
                         Contact = entity.Contact,
                         Department = entity.Department,
+                        DepartmentId = entity.DepartmentId,
                         Role = entity.Role,
                         DateOfJoining = entity.DateOfJoining,
                         DateOfResign = entity.DateOfResign,
@@ -92,7 +107,6 @@ namespace Common.Core.Services
                     throw;
                 }
             }
-
             public bool UpdateEmployee(int id, EmployeeModel model, string userId)
             {
                 try
@@ -107,6 +121,7 @@ namespace Common.Core.Services
                     entity.Email = model.Email;
                     entity.Contact = model.Contact;
                     entity.Department = model.Department;
+                    entity.DepartmentId = model.DepartmentId;
                     entity.Role = model.Role;
                     entity.DateOfJoining = model.DateOfJoining;
                     entity.DateOfResign = model.DateOfResign;
@@ -126,7 +141,6 @@ namespace Common.Core.Services
                     throw;
                 }
             }
-
             public EmployeeModel GetEmployeeDetails(int? Id)
             {
                 try

@@ -6,14 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace App.Admin.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class LeaveMasterController : BaseController
+    public class MasterDepartmentController : Controller
     {
         private readonly IMasterDepartmentService _masterDepartmentService;
         private readonly ILeaveService _leaveService;
         private readonly IContextHelper _contextHelper;
         private readonly LogisticContext _dbcontext;
-
-        public LeaveMasterController(IMasterDepartmentService masterDepartmentService, ILeaveService leaveService, IContextHelper contextHelper, LogisticContext dbcontext)
+        public MasterDepartmentController(IMasterDepartmentService masterDepartmentService, ILeaveService leaveService, IContextHelper contextHelper, LogisticContext dbcontext)
         {
             _dbcontext = dbcontext;
             _leaveService = leaveService;
@@ -23,18 +22,17 @@ namespace App.Admin.Web.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> List()
         {
-            var leaves = await _leaveService.GetLeaveMasterAsync();
+            var leaves = await _masterDepartmentService.GetActiveDepartmentsAsync();
             return View(leaves);
         }
         [HttpGet]
         public async Task<IActionResult> SaveLeaveMaster(int id)
         {
-            ViewBag.Departments =  _masterDepartmentService.GetDepartmentSelectListAsync();
-            var model = await _leaveService.GetMasterById(id);
+            var model = await _masterDepartmentService.GetMasterById(id);
             return PartialView("_AddOrEdit", model);
         }
         [HttpPost]
-        public async Task<IActionResult> SaveLeaveMaster(LeaveMaster model)
+        public async Task<IActionResult> SaveLeaveMaster(DepartmentMaster model)
         {
             if (!ModelState.IsValid)
             {
@@ -43,7 +41,7 @@ namespace App.Admin.Web.Areas.Admin.Controllers
             try
             {
                 var userId = _contextHelper.GetUsername();
-                var result = await _leaveService.SaveMaster(model, userId);
+                var result = await _masterDepartmentService.SaveMaster(model, userId);
                 return RedirectToAction("List");
             }
             catch (Exception ex)

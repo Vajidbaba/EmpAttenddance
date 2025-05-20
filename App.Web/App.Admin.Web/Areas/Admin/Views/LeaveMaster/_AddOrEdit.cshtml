@@ -1,33 +1,40 @@
 ﻿@model LeaveMaster
 
+<style>
+    label {
+        margin-bottom: 2px;
+    }
+</style>
 <form asp-action="saveleavemaster" method="post">
     <input type="hidden" asp-for="Id" />
-
-    <div class="form-group">
-        <label asp-for="Department" class="required"></label>
-        <select asp-for="Department" class="form-control form-control-sm" required>
-            <option value="">-- Select Department --</option>
-            <option value="HR">HR</option>
-            <option value="IT">IT</option>
-            <option value="Finance">Finance</option>
-            <option value="Sales">Sales</option>
-        </select>
-        <span asp-validation-for="Department" class="text-danger"></span>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="DepartmentId" class="required">Department</label>
+                <select asp-for="DepartmentId" class="form-control select2" asp-items="ViewBag.Departments">
+                    <option value="">-- Select Department --</option>
+                </select>
+                <span asp-validation-for="DepartmentId" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="required" asp-for="Year"></label>
+                <input asp-for="Year" type="number" class="form-control form-control-sm" min="2025" max="2026" required />
+                <span asp-validation-for="Year" class="text-danger"></span>
+            </div>
+        </div>
     </div>
-
-
     <div class="form-group">
         <label class="required" asp-for="SickLeaves"></label>
         <input asp-for="SickLeaves" type="number" class="form-control form-control-sm" min="0" required />
         <span asp-validation-for="SickLeaves" class="text-danger"></span>
     </div>
-
     <div class="form-group">
         <label class="required" asp-for="CasualLeaves"></label>
         <input asp-for="CasualLeaves" type="number" class="form-control form-control-sm" min="0" required />
         <span asp-validation-for="CasualLeaves" class="text-danger"></span>
     </div>
-
     <div class="form-group">
         <label class="required" asp-for="PaidLeaves"></label>
         <input asp-for="PaidLeaves" type="number" class="form-control form-control-sm" min="0" required />
@@ -40,13 +47,12 @@
         <span asp-validation-for="UnpaidLeaves" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
-        <label class="required" asp-for="Year"></label>
-        <input asp-for="Year" type="number" class="form-control form-control-sm" min="2025" max="2026" required />
-        <span asp-validation-for="Year" class="text-danger"></span>
+    <div class="row">
+        <div class="col-md-12 text-end">
+
+            <button type="submit" class="btn btn-dark  btn-sm mb-0 ">Save</button>
+            <button type="button" class="btn btn-light btn-sm mb-0 ms-2" data-bs-dismiss="offcanvas">Cancel</button>
+        </div>
     </div>
 
-    <br />
-
-    <button type="submit" class="btn btn-primary btn-sm">Save</button>
 </form>

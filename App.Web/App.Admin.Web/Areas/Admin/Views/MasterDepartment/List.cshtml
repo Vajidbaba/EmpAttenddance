@@ -1,25 +1,21 @@
-﻿@model IEnumerable<Common.Core.ViewModels.LeaveMasterViewModel>
+﻿@model IEnumerable<Common.Data.Models.DepartmentMaster>
 @{
-    ViewData["Title"] = "Leaves";
+    ViewData["Title"] = "Department";
 }
 <div class="card rounded-2 mt-3">
     <div class="card-header rounded-top bg-dark text-white text-sm px-3 py-1 d-flex align-items-center">
         <h6 class="mb-0 text-white text-sm me-auto">
             @ViewData["Title"]
         </h6>
-        <button onclick="openLeaveModal(0)" class="btn btn-light btn-sm py-1 rounded-1 px-3 m-0 ms-auto"> <i class="fa fa-plus me-2"></i> Add Leave</button>
+        <button onclick="openLeaveModal(0)" class="btn btn-light btn-sm py-1 rounded-1 px-3 m-0 ms-auto"> <i class="fa fa-plus me-2"></i> Add Department</button>
     </div>
     <div class="table-responsive">
         <table id="attexample" class="table table-sm table-striped table-hover mb-0 dt-responsive nowrap w-100 small align-middle">
             <thead class="table-light">
                 <tr>
-
-                    <th class="p-1 ps-2">Department</th>
-                    <th class="p-1 ps-2">SickLeaves</th>
-                    <th class="p-1 ps-2">CasualLeaves</th>
-                    <th class="p-1 ps-2">PaidLeaves</th>
-                    <th class="p-1 ps-2">UnpaidLeaves</th>
-                    <th class="p-1 ps-2">Year</th>
+                    <th class="p-1 ps-2">Id</th>
+                    <th class="p-1 ps-2">Name</th>
+                    <th class="p-1 ps-2">Description</th>
                     <th class="p-1 ps-2">Action</th>
 
                 </tr>
@@ -28,12 +24,9 @@
                 @foreach (var leave in Model)
                 {
                     <tr>
-                        <td class="p-1 ps-2">@leave.DepartmentName</td>
-                        <td class="p-1 ps-2">@leave.SickLeaves</td>
-                        <td class="p-1 ps-2">@leave.CasualLeaves</td>
-                        <td class="p-1 ps-2">@leave.PaidLeaves</td>
-                        <td class="p-1 ps-2">@leave.UnpaidLeaves</td>
-                        <td class="p-1 ps-2">@leave.Year</td>
+                        <td class="p-1 ps-2">@leave.Id</td>
+                        <td class="p-1 ps-2">@leave.Name</td>
+                        <td class="p-1 ps-2">@leave.Description</td>
                         <td class="p-1 ps-2">
                             <a href="javascript:void(0);" class="btn btn-dark btn-sm mb-0 px-3 py-1" onclick="openLeaveModal(@leave.Id)">
                                 <i class="fa fa-edit"></i>
@@ -47,8 +40,8 @@
 </div>
 
 <!-- Details -->
-<div class="offcanvas offcanvas-end" tabindex="-1" id="leaveModalContainerId" aria-labelledby="employeeDetailsLabel">
-    <div class="offcanvas-body" id="leaveModalContainer">
+<div class="offcanvas offcanvas-end" tabindex="-1" id="depId" aria-labelledby="depModalContainer">
+    <div class="offcanvas-body" id="depModalContainer">
     </div>
 </div>
 
@@ -78,17 +71,17 @@
             });
         });
           function openLeaveModal(id) {
-            const offcanvas = new bootstrap.Offcanvas(document.getElementById('leaveModalContainerId'));
+            const offcanvas = new bootstrap.Offcanvas(document.getElementById('depId'));
             $.ajax({
-                url: '@Url.Content("~/admin/leavemaster/saveleavemaster")',
+                url: '@Url.Content("~/admin/masterdepartment/saveleavemaster")',
                 type: 'GET',
                 data: { id: id },
                 success: function(result) {
-                    $("#leaveModalContainer").html(result);
+                    $("#depModalContainer").html(result);
                     offcanvas.show();
                 },
                 error: function() {
-                    $("#leaveModalContainer").html('<p class="text-danger">❌ Failed to load details.</p>');
+                    $("#depModalContainer").html('<p class="text-danger">❌ Failed to load details.</p>');
                 }
             });
         }
