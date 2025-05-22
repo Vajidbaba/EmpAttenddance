@@ -59,14 +59,7 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script type="text/javascript">
-           $(document).ready(function () {
-            $('#attendance').DataTable({
-                responsive: true,
-                searching: true,
-                lengthChange: false,
-            });
           
-        });
         $("form").submit(function(e) {
             e.preventDefault();
             var form = $(this);
@@ -130,6 +123,67 @@
                     $("#summeryContent").html('<p class="text-danger">❌ Failed to load details.</p>');
                 }
             });
+            }    
+            
+           $(document).on("change", "input[name='AttendanceStatus']", function () {
+            const selected = $(this).val();
+            if (selected === "Leave") {
+                $("#leaveSection").slideDown();
+            } else {
+                $("#leaveSection").slideUp();
+            }
+            if (selected === "Present" || selected === "Absent" || selected === "Half Day") {
+              $("#LeaveStartDate").val("");
+              $("#LeaveEndDate").val("");
+            }
+        });
+        $(document).on("change", "#LeaveStartDate", function () {
+            calculateTotalLeaveDays();
+        });
+
+
+           $(document).on("change", "#LeaveEndDate", function () {
+            const start = new Date($("#LeaveStartDate").val());
+            const end = new Date($(this).val());
+
+            if (!$("#LeaveStartDate").val()) {
+                alert("Please select Leave Start Date first.");
+                $("#LeaveEndDate").val("");
+                return;
+            }
+
+            if (start > end) {
+                alert("❌ Leave Start Date must be less than or equal to Leave End Date.");
+                $("#LeaveEndDate").val(""); 
+                $("#TotalDays").val("");
+                return;
+            }
+            calculateTotalLeaveDays();
+        });
+         $(document).ready(function () {
+               const initialStatus = $("input[name='AttendanceStatus']:checked").val();
+                if (initialStatus === "Leave") {
+                    $("#leaveSection").show();
+                }
+            $('#attendance').DataTable({
+                responsive: true,
+                searching: true,
+                lengthChange: false,
+            });
+
+        });
+        function calculateTotalLeaveDays() {
+            const start = new Date($("#LeaveStartDate").val());
+            const end = new Date($("#LeaveEndDate").val());
+
+            if (!isNaN(start) && !isNaN(end) && start <= end) {
+                const timeDiff = end - start;
+                const dayDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) + 1; // +1 to include both dates
+                $("#TotalDays").val(dayDiff);
+            } else {
+                $("#TotalDays").val("");
+            }
         }
+
     </script>
 }

@@ -1,6 +1,7 @@
 ﻿using Common.Core.ViewModels;
 using Common.Data.Context;
 using Common.Data.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Common.Core.Services
@@ -11,7 +12,7 @@ namespace Common.Core.Services
         Task<List<LeaveMaster>> AllLeaveMasterAsync();
         Task<LeaveMaster> SaveMaster(LeaveMaster leaveMaster, string userId);
         Task<LeaveMaster> GetMasterById(int id);
-
+        SelectList GetListMaster();
         public class LeaveService : ILeaveService
         {
             private readonly LogisticContext _dbcontext;
@@ -22,6 +23,13 @@ namespace Common.Core.Services
                 _dbcontext = dbcontext;
                 _contextHelper = contextHelper;
             }
+
+            public SelectList GetListMaster()
+            {
+                var departments = _dbcontext.LeaveMasters.Where(x => x.Active).OrderBy(x => x.Name).ToList();
+                return new SelectList(departments, "Id", "Name");
+            }
+
             public async Task<List<LeaveMaster>> AllLeaveMasterAsync()
             {
                 int currentYear = DateTime.Now.Year;

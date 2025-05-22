@@ -1,8 +1,8 @@
 ﻿using Common.Core.Services;
 using Common.Core.ViewModels;
 using Common.Data.Context;
-using Common.Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace App.Admin.Web.Areas.Admin.Controllers
 {
@@ -12,11 +12,21 @@ namespace App.Admin.Web.Areas.Admin.Controllers
         private readonly IAttendanceService _attendanceService;
         private readonly IEmployeeService _employeeService;
         private readonly IContextHelper _contextHelper;
-        public MarkAttendanceController(IAttendanceService attendanceService, IEmployeeService employeeService, IContextHelper contextHelper)
+        private readonly ILeaveService _leaveService;
+        private readonly IMasterDepartmentService _masterDepartmentService;
+        private readonly LogisticContext _dbcontext;
+
+
+        public MarkAttendanceController(LogisticContext dbcontext, IMasterDepartmentService masterDepartmentService, ILeaveService leaveService, IAttendanceService attendanceService, IEmployeeService employeeService, IContextHelper contextHelper)
         {
             _attendanceService = attendanceService;
             _employeeService = employeeService;
             _contextHelper = contextHelper;
+            _dbcontext = dbcontext;
+            _leaveService = leaveService;
+            _masterDepartmentService = masterDepartmentService;
+
+
         }
         public async Task<IActionResult> List()
         {
@@ -26,9 +36,22 @@ namespace App.Admin.Web.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Add(int id)
         {
+            ViewBag.LeaveList = _leaveService.GetListMaster();
             var attendance = await _attendanceService.GetTodayAttendanceAsync(id);
             var employee = await _employeeService.GetEmployeeById(id);
             var overtime = await _attendanceService.GetTodayOvertime(id);
+
+            int sickLeaves = await _dbcontext.Leaves.Where(x => x.EmployeeId == id && x.LeaveId == 1)
+                .SumAsync(x => (int)x.TotalDays);
+
+            int casualLeaves = await _dbcontext.Leaves.Where(x => x.EmployeeId == id && x.LeaveId == 2)
+                .SumAsync(x => (int)x.TotalDays);
+
+            int unpaidLeaves = await _dbcontext.Leaves.Where(x => x.EmployeeId == id && x.LeaveId == 3)
+                .SumAsync(x => (int)x.TotalDays);
+
+            int paidLeaves = await _dbcontext.Leaves.Where(x => x.EmployeeId == id && x.LeaveId == 4)
+                .SumAsync(x => (int)x.TotalDays);
 
 
             var model = new AttendanceFormViewModel
@@ -43,6 +66,11 @@ namespace App.Admin.Web.Areas.Admin.Controllers
                 AdvancePay = overtime?.AdvancePay,
                 Bonus = overtime?.Bonus,
                 Deducation = overtime?.Deducation,
+                // Add leave counts here
+                SickLeaves = sickLeaves,
+                CasualLeaves = casualLeaves,
+                UnpaidLeaves = unpaidLeaves,
+                PaidLeaves = paidLeaves
             };
             return PartialView("_Add", model);
         }
@@ -69,7 +97,7 @@ namespace App.Admin.Web.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return PartialView("_Add", model);
             var userId = _contextHelper.GetUsername();
-            await _attendanceService.SaveOrUpdateAttendance(model, userId); 
+            await _attendanceService.SaveOrUpdateAttendance(model, userId);
             return RedirectToAction("List");
         }
 

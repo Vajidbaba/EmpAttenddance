@@ -2,11 +2,6 @@
 using Common.Data.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Core.Services
 {
@@ -36,7 +31,6 @@ namespace Common.Core.Services
         public SelectList GetDepartmentSelectListAsync()
         {
             var departments =  _dbContext.DepartmentMaster.Where(x => x.Active).OrderBy(x => x.Name).ToList();
-
             return new SelectList(departments, "Id", "Name");
         }
         public async Task<DepartmentMaster> SaveMaster(DepartmentMaster leaveMaster, string userId)

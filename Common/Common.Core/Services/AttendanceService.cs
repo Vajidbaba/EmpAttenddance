@@ -5,6 +5,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System.Web.WebPages;
 
 namespace Common.Core.Services
 {
@@ -38,8 +39,7 @@ namespace Common.Core.Services
         public async Task SaveOrUpdateAttendance(AttendanceFormViewModel model, string userId)
         {
             // Attendance Save/Update
-            var attendance = await _dbcontext.MarkAttendance
-                .FirstOrDefaultAsync(a => a.EmployeeId == model.EmployeeId && a.AttendanceDate.Date == model.AttendanceDate.Date);
+            var attendance = await _dbcontext.MarkAttendance.FirstOrDefaultAsync(a => a.EmployeeId == model.EmployeeId && a.AttendanceDate.Date == model.AttendanceDate.Date);
 
             if (attendance == null)
             {
@@ -61,36 +61,69 @@ namespace Common.Core.Services
             }
 
             // Overtime Save/Update
-            var overtime = await _dbcontext.OvertimeRecords
-                .FirstOrDefaultAsync(o => o.EmployeeId == model.EmployeeId && o.Date.Value.Date == model.AttendanceDate.Date);
-
-            if (overtime == null)
+            if (model.TotalOvertimeHours > 0)
             {
-                overtime = new OvertimeRecords
+                var overtime = await _dbcontext.OvertimeRecords.FirstOrDefaultAsync(o => o.EmployeeId == model.EmployeeId && o.Date.Value.Date == model.AttendanceDate.Date);
+                if (overtime == null)
                 {
-                    EmployeeId = model.EmployeeId,
-                    Date = model.AttendanceDate,
-                    TotalOvertimeHours = model.TotalOvertimeHours,
-                    AdvancePay = model.AdvancePay,
-                    Bonus = model.Bonus,
-                    Deducation = model.Deducation,
-                    AddedBy = userId,
-                    AddedOn = DateTime.Now,
-                    Active = true
-                };
-                _dbcontext.OvertimeRecords.Add(overtime);
+                    overtime = new OvertimeRecords
+                    {
+                        EmployeeId = model.EmployeeId,
+                        Date = model.AttendanceDate,
+                        TotalOvertimeHours = model.TotalOvertimeHours,
+                        AdvancePay = model.AdvancePay,
+                        Bonus = model.Bonus,
+                        Deducation = model.Deducation,
+                        AddedBy = userId,
+                        AddedOn = DateTime.Now,
+                        Active = true
+                    };
+                    _dbcontext.OvertimeRecords.Add(overtime);
+                }
+                else
+                {
+                    overtime.TotalOvertimeHours = model.TotalOvertimeHours;
+                    overtime.AdvancePay = model.AdvancePay;
+                    overtime.Bonus = model.Bonus;
+                    overtime.Deducation = model.Deducation;
+                    overtime.UpdatedBy = userId;
+                    overtime.UpdatedOn = DateTime.Now;
+                    _dbcontext.OvertimeRecords.Update(overtime);
+                }
             }
-            else
+            if (model.LeaveType != null && model.TotalDays > 0)
             {
-                overtime.TotalOvertimeHours = model.TotalOvertimeHours;
-                overtime.AdvancePay = model.AdvancePay;
-                overtime.Bonus = model.Bonus;
-                overtime.Deducation = model.Deducation;
-                overtime.UpdatedBy = userId;
-                overtime.UpdatedOn = DateTime.Now;
-                _dbcontext.OvertimeRecords.Update(overtime);
+                var leave = await _dbcontext.Leaves.FirstOrDefaultAsync(l => l.EmployeeId == model.EmployeeId && l.StartDate <= model.AttendanceDate.Date && l.EndDate >= model.AttendanceDate.Date);
+                if (leave == null)
+                {
+                    leave = new Leaves
+                    {
+                        EmployeeId = model.EmployeeId,
+                        LeaveId = model.LeaveType,
+                        TotalDays = model.TotalDays,
+                        StartDate = model.StartDate,
+                        EndDate = model.EndDate,
+                        Reason = model.Reason,
+                        ApplyDate = model.AttendanceDate,
+                        AddedBy = userId,
+                        Status = "Pending",
+                        AddedOn = DateTime.Now,
+                        Active = true
+                    };
+                    _dbcontext.Leaves.Add(leave);
+                }
+                else
+                {
+                    leave.LeaveId = model.LeaveType;
+                    leave.TotalDays = model.TotalDays;
+                    leave.StartDate = model.StartDate;
+                    leave.EndDate = model.EndDate;
+                    leave.Reason = model.Reason;
+                    leave.UpdatedBy = userId;
+                    leave.UpdatedOn = DateTime.Now;
+                    _dbcontext.Leaves.Update(leave);
+                }
             }
-
             await _dbcontext.SaveChangesAsync();
         }
 
@@ -161,7 +194,7 @@ namespace Common.Core.Services
                 EmployeeId = attendance.EmployeeId,
                 Date = attendance.Date,
                 CheckInTime = attendance.CheckInTime,
-                CheckOutTime = attendance.CheckOutTime, 
+                CheckOutTime = attendance.CheckOutTime,
                 WorkHours = workHours,
                 Status = attendance.Status,
                 Active = true,
@@ -193,7 +226,7 @@ namespace Common.Core.Services
             {
                 record.WorkHours = 0;
             }
-          
+
             record.Status = attendance.Status;
             record.UpdatedBy = userId;
             record.UpdatedOn = DateTime.Now;
