@@ -19,6 +19,8 @@ namespace Common.Core.Services
 
         Task<SalaryViewModel> GetSalaryDetailsAsync(int employeeId, int year, int month);
         Task SaveSalaryAsync(SalaryViewModel model);
+        Task<SalaryResultDto> CalculateEmployeeSalaryAsync(int employeeId, int year, int month);
+        Task<List<SalaryListDto>> GetSalaryListAsync(int year, int month);
 
     }
     public class SalariesService : ISalariesService
@@ -194,6 +196,111 @@ namespace Common.Core.Services
             await _dbcontext.SaveChangesAsync();
             return true;
         }
+        public async Task<List<SalaryListDto>> GetSalaryListAsync(int year, int month)
+        {
+            var employees = await _dbcontext.Employees.ToListAsync();
+
+            var salaryList = new List<SalaryListDto>();
+
+            foreach (var emp in employees)
+            {
+                var salary = await CalculateEmployeeSalaryAsync(emp.Id, year, month);
+
+                salaryList.Add(new SalaryListDto
+                {
+                    EmployeeId = emp.Id,
+                    EmployeeName = emp.Name,
+                    Year = year,
+                    Month = month,
+                    NetSalary = salary.NetSalary
+                });
+            }
+
+            return salaryList;
+        }
+
+        public async Task<SalaryResultDto> CalculateEmployeeSalaryAsync(int employeeId, int year, int month)
+        {
+            var employee = await _dbcontext.Employees.FirstOrDefaultAsync(e => e.Id == employeeId);
+            if (employee == null)
+                throw new Exception("Employee not found");
+
+            var baseSalary = employee.BaseSalary;
+
+            // 1. Get all days of the month
+            var startDate = new DateTime(year, month, 1);
+            var endDate = startDate.AddMonths(1).AddDays(-1);
+            int totalDays = DateTime.DaysInMonth(year, month);
+
+            // 2. Get holidays
+            var holidays = await _dbcontext.Holidays
+                .Where(h => h.Date >= startDate && h.Date <= endDate && (h.IsWeekend || h.IsCompanyHoliday))
+                .Select(h => h.Date)
+                .ToListAsync();
+
+            int totalHolidays = holidays.Count;
+            int workingDays = totalDays - totalHolidays;
+
+            // 3. Get attendance
+            var attendanceRecords = await _dbcontext.MarkAttendance
+                .Where(a => a.EmployeeId == employeeId && a.AttendanceDate >= startDate && a.AttendanceDate <= endDate)
+                .ToListAsync();
+
+            int presentDays = attendanceRecords.Count(a => a.AttendanceStatus == "Present");
+            int halfDays = attendanceRecords.Count(a => a.AttendanceStatus == "Half Day");
+            int paidLeaves = attendanceRecords.Count(a => a.AttendanceStatus == "Leave");
+            int absentDays = attendanceRecords.Count(a => a.AttendanceStatus == "Absent");
+
+            // 4. Final attendance stats
+            int totalHalfDays = halfDays;
+
+            // 5. Per day salary
+            decimal perDaySalary = baseSalary / workingDays;
+            decimal earnedSalary = (presentDays * perDaySalary)
+                                 + (paidLeaves * perDaySalary)
+                                 + ((totalHalfDays * 0.5m) * perDaySalary);
+
+            decimal deduction = absentDays * perDaySalary;
+
+            // 6. Overtime
+            var overtimeRecords = await _dbcontext.OvertimeRecords
+                .Where(o => o.EmployeeId == employeeId && o.Date >= startDate && o.Date <= endDate)
+                .ToListAsync();
+
+            decimal totalOtHours = overtimeRecords.Sum(o => o.TotalOvertimeHours ?? 0);
+            decimal ratePerHour = await GetRatePerHourAsync(employee.OTtype ?? 0);
+            decimal overtimePay = totalOtHours * ratePerHour;
+
+            // 7. Final net salary
+            decimal netSalary = earnedSalary + overtimePay - deduction;
+
+            return new SalaryResultDto
+            {
+                EmployeeId = employeeId,
+                Month = month,
+                Year = year,
+                WorkingDays = workingDays,
+                PresentDays = presentDays,
+                PaidLeaveDays = paidLeaves,
+                HalfDays = halfDays,
+                UnpaidLeaves = 0,
+                AbsentDays = absentDays,
+                OvertimeHours = totalOtHours,
+                OvertimePay = overtimePay,
+                EarnedSalary = earnedSalary,
+                Deduction = deduction,
+                NetSalary = netSalary
+            };
+        }
+
+
+
+        public async Task<decimal> GetRatePerHourAsync(int otTypeId)
+        {
+            var ot = await _dbcontext.OvertimeMaster.FindAsync(otTypeId);
+            return ot?.RatePerHour ?? 0;
+        }
+
 
         public async Task<SalaryViewModel> GetSalaryDetailsAsync(int employeeId, int year, int month)
         {

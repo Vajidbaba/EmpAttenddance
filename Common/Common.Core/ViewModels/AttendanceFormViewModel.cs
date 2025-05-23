@@ -18,6 +18,17 @@
         public int CasualLeaves { get; set; }
         public int UnpaidLeaves { get; set; }
         public int PaidLeaves { get; set; }
+        public int SickLeavesUsed { get; set; }
+        public int SickLeavesBalance { get; set; }
+
+        public int CasualLeavesUsed { get; set; }
+        public int CasualLeavesBalance { get; set; }
+
+        public int PaidLeavesUsed { get; set; }
+        public int PaidLeavesBalance { get; set; }
+
+        public int UnpaidLeavesUsed { get; set; }
+        public int UnpaidLeavesBalance { get; set; }
         public decimal? TotalOvertimeHours { get; set; }
         public decimal? AdvancePay { get; set; }
         public decimal? Bonus { get; set; }

@@ -1,0 +1,61 @@
+﻿@model Common.Core.ViewModels.SalaryResultDto
+
+@{
+    ViewData["Title"] = "Salary Details";
+    var monthName = new DateTime(Model.Year, Model.Month, 1).ToString("MMMM yyyy");
+}
+
+<h2>Salary Details for @monthName</h2>
+
+<table class="table table-bordered">
+    <tbody>
+        <tr>
+            <th>Employee ID</th>
+            <td>@Model.EmployeeId</td>
+        </tr>
+        <tr>
+            <th>Working Days</th>
+            <td>@Model.WorkingDays</td>
+        </tr>
+        <tr>
+            <th>Present Days</th>
+            <td>@Model.PresentDays</td>
+        </tr>
+        <tr>
+            <th>Paid Leave Days</th>
+            <td>@Model.PaidLeaveDays</td>
+        </tr>
+        <tr>
+            <th>Half Days</th>
+            <td>@Model.HalfDays</td>
+        </tr>
+        <tr>
+            <th>Unpaid Leaves</th>
+            <td>@Model.UnpaidLeaves</td>
+        </tr>
+        <tr>
+            <th>Absent Days</th>
+            <td>@Model.AbsentDays</td>
+        </tr>
+        <tr>
+            <th>Overtime Hours</th>
+            <td>@Model.OvertimeHours</td>
+        </tr>
+        <tr>
+            <th>Overtime Pay</th>
+            <td>@Model.OvertimePay.ToString("C")</td>
+        </tr>
+        <tr>
+            <th>Earned Salary</th>
+            <td>@Model.EarnedSalary.ToString("C")</td>
+        </tr>
+        <tr>
+            <th>Deductions</th>
+            <td>@Model.Deduction.ToString("C")</td>
+        </tr>
+        <tr>
+            <th>Net Salary</th>
+            <td><strong>@Model.NetSalary.ToString("C")</strong></td>
+        </tr>
+    </tbody>
+</table>

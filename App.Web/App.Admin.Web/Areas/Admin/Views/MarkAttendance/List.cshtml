@@ -60,7 +60,23 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script type="text/javascript">
-          
+           $(document).ready(function () {
+            toggleLeaveSection($("input[name='AttendanceStatus']:checked").val());
+
+            $(document).on("change", "input[name='AttendanceStatus']", function () {
+                toggleLeaveSection($(this).val());
+            });
+        });
+        function toggleLeaveSection(status) {
+            if (status === "Leave") {
+                $("#leaveSection").slideDown();
+            } else {
+                $("#leaveSection").slideUp();
+                // Clear leave fields if needed
+                $("#LeaveStartDate, #LeaveEndDate, #TotalDays").val("");
+            }
+        }
+
         $("form").submit(function(e) {
             e.preventDefault();
             var form = $(this);
@@ -126,18 +142,7 @@
             });
             }    
             
-           $(document).on("change", "input[name='AttendanceStatus']", function () {
-            const selected = $(this).val();
-            if (selected === "Leave") {
-                $("#leaveSection").slideDown();
-            } else {
-                $("#leaveSection").slideUp();
-            }
-            if (selected === "Present" || selected === "Absent" || selected === "Half Day") {
-              $("#LeaveStartDate").val("");
-              $("#LeaveEndDate").val("");
-            }
-        });
+      
         $(document).on("change", "#LeaveStartDate", function () {
             calculateTotalLeaveDays();
         });
