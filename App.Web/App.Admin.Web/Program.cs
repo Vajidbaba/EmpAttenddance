@@ -34,6 +34,8 @@ builder.Services.AddScoped<ISalariesService, SalariesService>();
 builder.Services.AddScoped<IOvertimeRecordsService, OvertimeRecordsService>();
 builder.Services.AddScoped<IMasterOvertimeService, MasterOvertimeService>();
 builder.Services.AddScoped<IMasterDepartmentService, MasterDepartmentService>();
+builder.Services.AddScoped<IHolidayService, HolidayService>();
+
 
 
 builder.Services.AddSingleton<IContextHelper, ContextHelper>();

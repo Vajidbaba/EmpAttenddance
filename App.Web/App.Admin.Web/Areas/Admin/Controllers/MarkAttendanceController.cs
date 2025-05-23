@@ -4,10 +4,11 @@ using Common.Data.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace App.Admin.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class MarkAttendanceController : Controller
+    public class MarkAttendanceController : BaseController
     {
         private readonly IAttendanceService _attendanceService;
         private readonly IEmployeeService _employeeService;

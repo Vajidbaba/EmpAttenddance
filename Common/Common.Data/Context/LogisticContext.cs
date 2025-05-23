@@ -27,6 +27,8 @@ namespace Common.Data.Context
         public DbSet<LeaveMaster> LeaveMaster { get; set; }
         public DbSet<LeaveMasters> LeaveMasters { get; set; }
         public DbSet<DepartmentMaster> DepartmentMaster { get; set; }
+        public DbSet<Holidays> Holidays { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

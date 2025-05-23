@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace App.Admin.Web.Areas.Admin.Controllers
 {
@@ -6,14 +7,13 @@ namespace App.Admin.Web.Areas.Admin.Controllers
     {
         protected void Toast(string message, ToastType toastType)
         {
-            TempData[toastType + ""] = message;
+            TempData[toastType.ToString()] = message;
         }
+
         protected void Alert(string message, ToastType toastType)
         {
-            TempData["Error" + toastType + " "] = message;
+            TempData["Error" + toastType.ToString()] = message;
         }
-        
-
 
         protected enum ToastType
         {
@@ -21,6 +21,15 @@ namespace App.Admin.Web.Areas.Admin.Controllers
             ERROR,
             WARNING,
             INFO
+        }
+    }
+
+    public static class DateExtensions
+    {
+        public static DateTime StartOfWeek(this DateTime dt, DayOfWeek startOfWeek)
+        {
+            int diff = (7 + (dt.DayOfWeek - startOfWeek)) % 7;
+            return dt.AddDays(-1 * diff).Date;
         }
     }
 }

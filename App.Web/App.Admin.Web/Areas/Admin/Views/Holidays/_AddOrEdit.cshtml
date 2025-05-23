@@ -1,0 +1,43 @@
+﻿@model Holidays
+
+<div class="modal-header">
+    <h5 class="modal-title">@((Model.Id == 0) ? "Add Holiday" : "Edit Holiday")</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<form asp-action="AddOrEdit" method="post">
+    <div class="modal-body">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label asp-for="Date" class="form-label"></label>
+            <input asp-for="Date" class="form-control" type="date" />
+            <span asp-validation-for="Date" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Reason" class="form-label"></label>
+            <input asp-for="Reason" class="form-control" />
+            <span asp-validation-for="Reason" class="text-danger"></span>
+        </div>
+
+        <div class="form-check mb-3">
+            <input asp-for="IsWeekend" class="form-check-input" type="checkbox" />
+            <label asp-for="IsWeekend" class="form-check-label">Is Weekend</label>
+        </div>
+
+        <div class="form-check mb-3">
+            <input asp-for="IsCompanyHoliday" class="form-check-input" type="checkbox" />
+            <label asp-for="IsCompanyHoliday" class="form-check-label">Is Company Holiday</label>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-success">Save</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
