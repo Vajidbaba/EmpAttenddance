@@ -1,0 +1,768 @@
+USE [prod.empmanagemnet]
+GO
+/****** Object:  Table [dbo].[Attendance]    Script Date: 23-05-2025 21:31:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Attendance](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[EmployeeId] [int] NULL,
+	[Date] [date] NOT NULL,
+	[CheckInTime] [time](7) NULL,
+	[CheckOutTime] [time](7) NULL,
+	[WorkHours] [decimal](5, 2) NULL,
+	[Status] [nvarchar](20) NULL,
+	[Active] [bit] NULL,
+	[AddedOn] [datetime] NULL,
+	[AddedBy] [nvarchar](100) NULL,
+	[UpdatedOn] [datetime] NULL,
+	[UpdatedBy] [nvarchar](100) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[DepartmentMaster]    Script Date: 23-05-2025 21:31:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[DepartmentMaster](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](100) NULL,
+	[Description] [nvarchar](250) NULL,
+	[Active] [bit] NULL,
+	[AddedOn] [datetime2](7) NULL,
+	[AddedBy] [nvarchar](50) NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[UpdatedBy] [nvarchar](50) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[EmployeeLeave]    Script Date: 23-05-2025 21:31:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[EmployeeLeave](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[EmployeeId] [int] NOT NULL,
+	[LeaveType] [nvarchar](50) NULL,
+	[StartDate] [date] NULL,
+	[EndDate] [date] NULL,
+	[NumberOfDays] [int] NULL,
+	[Status] [nvarchar](20) NULL,
+	[Reason] [nvarchar](500) NULL,
+	[Active] [bit] NULL,
+	[AddedOn] [datetime2](7) NULL,
+	[AddedBy] [nvarchar](50) NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[UpdatedBy] [nvarchar](50) NULL,
+ CONSTRAINT [PK__Employee__3214EC0762CB1EE2] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Employees]    Script Date: 23-05-2025 21:31:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Employees](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[DepartmentId] [int] NULL,
+	[Department] [nvarchar](50) NULL,
+	[Name] [nvarchar](100) NOT NULL,
+	[FatherName] [nvarchar](50) NULL,
+	[Email] [nvarchar](100) NULL,
+	[Contact] [nvarchar](15) NULL,
+	[Role] [nvarchar](50) NULL,
+	[DateOfJoining] [datetime2](7) NULL,
+	[DateOfResign] [datetime2](7) NULL,
+	[BaseSalary] [decimal](18, 0) NULL,
+	[OTtype] [int] NULL,
+	[City] [nvarchar](20) NULL,
+	[State] [nvarchar](50) NULL,
+	[Pin] [nvarchar](20) NULL,
+	[Address] [nvarchar](max) NULL,
+	[Active] [bit] NULL,
+	[AddedOn] [datetime2](7) NULL,
+	[AddedBy] [nvarchar](100) NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[UpdatedBy] [nvarchar](100) NULL,
+ CONSTRAINT [PK__Employee__3214EC07F64D81F6] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Holidays]    Script Date: 23-05-2025 21:31:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Holidays](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Date] [date] NULL,
+	[Reason] [nvarchar](255) NULL,
+	[IsWeekend] [bit] NULL,
+	[IsCompanyHoliday] [bit] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[LeaveMaster]    Script Date: 23-05-2025 21:31:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[LeaveMaster](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[DepartmentId] [int] NULL,
+	[SickLeaves] [int] NULL,
+	[CasualLeaves] [int] NULL,
+	[PaidLeaves] [int] NULL,
+	[UnpaidLeaves] [int] NULL,
+	[Year] [int] NULL,
+	[Active] [bit] NULL,
+	[AddedOn] [datetime2](7) NULL,
+	[AddedBy] [nvarchar](50) NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[UpdatedBy] [nvarchar](50) NULL,
+ CONSTRAINT [PK__LeaveMas__3214EC07120D07A5] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[LeaveMasters]    Script Date: 23-05-2025 21:31:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[LeaveMasters](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](50) NULL,
+	[Description] [nvarchar](200) NULL,
+	[YearlyLimit] [int] NULL,
+	[Active] [bit] NULL,
+	[AddedOn] [datetime] NULL,
+	[AddedBy] [nvarchar](100) NULL,
+	[UpdatedOn] [datetime] NULL,
+	[UpdatedBy] [nvarchar](100) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[LeaveRequests]    Script Date: 23-05-2025 21:31:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[LeaveRequests](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[EmployeeId] [int] NULL,
+	[LeaveType] [nvarchar](20) NULL,
+	[StartDate] [date] NULL,
+	[EndDate] [date] NULL,
+	[TotalDays] [nvarchar](20) NULL,
+	[Status] [nvarchar](20) NULL,
+	[Reason] [nvarchar](500) NULL,
+	[AppliedOn] [datetime] NULL,
+	[ApprovedBy] [nvarchar](100) NULL,
+	[ApprovedOn] [datetime] NULL,
+	[Active] [bit] NOT NULL,
+	[AddedOn] [datetime] NULL,
+	[AddedBy] [nvarchar](100) NULL,
+	[UpdatedOn] [datetime] NULL,
+	[UpdatedBy] [nvarchar](100) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Leaves]    Script Date: 23-05-2025 21:31:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Leaves](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[EmployeeId] [int] NOT NULL,
+	[LeaveId] [int] NULL,
+	[StartDate] [datetime2](7) NULL,
+	[EndDate] [datetime2](7) NULL,
+	[TotalDays] [int] NULL,
+	[Reason] [nvarchar](250) NULL,
+	[ApplyDate] [datetime2](7) NULL,
+	[Status] [nvarchar](50) NOT NULL,
+	[Active] [bit] NOT NULL,
+	[AddedOn] [datetime2](7) NULL,
+	[AddedBy] [nvarchar](50) NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[UpdatedBy] [nvarchar](50) NULL,
+ CONSTRAINT [PK__Leaves__3214EC0738278730] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[MarkAttendance]    Script Date: 23-05-2025 21:31:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[MarkAttendance](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[EmployeeId] [int] NOT NULL,
+	[AttendanceDate] [date] NOT NULL,
+	[AttendanceStatus] [nvarchar](50) NOT NULL,
+	[Active] [bit] NOT NULL,
+	[AddedBy] [nvarchar](100) NULL,
+	[AddedOn] [datetime] NULL,
+	[UpdatedBy] [nvarchar](100) NULL,
+	[UpdatedOn] [datetime] NULL,
+ CONSTRAINT [PK__MarkAtte__3214EC07ACC02942] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[OvertimeMaster]    Script Date: 23-05-2025 21:31:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[OvertimeMaster](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Type] [nvarchar](100) NULL,
+	[RatePerHour] [decimal](10, 2) NULL,
+	[Description] [nvarchar](255) NULL,
+	[Active] [bit] NOT NULL,
+	[AddedOn] [datetime] NOT NULL,
+	[AddedBy] [nvarchar](100) NULL,
+	[UpdatedOn] [datetime] NULL,
+	[UpdatedBy] [nvarchar](100) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[OvertimeRecords]    Script Date: 23-05-2025 21:31:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[OvertimeRecords](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[EmployeeId] [int] NOT NULL,
+	[Date] [datetime2](7) NULL,
+	[TotalOvertimeHours] [decimal](5, 2) NULL,
+	[RatePerHour] [decimal](10, 2) NULL,
+	[OvertimePay] [decimal](18, 2) NULL,
+	[AdvancePay] [decimal](10, 2) NULL,
+	[Bonus] [decimal](10, 2) NULL,
+	[Deducation] [decimal](10, 2) NULL,
+	[Active] [bit] NULL,
+	[AddedOn] [datetime2](7) NULL,
+	[AddedBy] [nvarchar](100) NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[UpdatedBy] [nvarchar](100) NULL,
+ CONSTRAINT [PK__Overtime__3214EC07AEFCA340] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Salaries]    Script Date: 23-05-2025 21:31:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Salaries](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[EmployeeId] [int] NOT NULL,
+	[Year] [int] NULL,
+	[Month] [int] NULL,
+	[PaymentDate] [date] NULL,
+	[BaseSalary] [decimal](18, 2) NULL,
+	[WorkingDays] [int] NULL,
+	[PresentDays] [int] NULL,
+	[AbsentDays] [int] NULL,
+	[LeaveDays] [int] NULL,
+	[OvertimeHours] [decimal](10, 2) NULL,
+	[OvertimePay] [decimal](18, 2) NULL,
+	[Bonus] [decimal](18, 2) NULL,
+	[Advance] [decimal](18, 2) NULL,
+	[Deduction] [decimal](18, 2) NULL,
+	[NetSalary] [decimal](18, 2) NULL,
+	[Active] [bit] NULL,
+	[AddedOn] [datetime2](7) NULL,
+	[AddedBy] [nvarchar](50) NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[UpdatedBy] [nvarchar](50) NULL,
+	[IsPaid] [bit] NULL,
+ CONSTRAINT [PK__Salaries__3214EC076690B12D] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Users]    Script Date: 23-05-2025 21:31:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Users](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [nvarchar](100) NOT NULL,
+	[Username] [nvarchar](100) NOT NULL,
+	[Password] [nvarchar](255) NOT NULL,
+	[Active] [bit] NULL,
+	[AddedOn] [datetime] NULL,
+	[AddedBy] [nvarchar](50) NULL,
+	[UpdatedOn] [datetime] NULL,
+	[UpdatedBy] [nvarchar](50) NULL,
+	[Role] [nvarchar](150) NULL
+) ON [PRIMARY]
+GO
+SET IDENTITY_INSERT [dbo].[DepartmentMaster] ON 
+GO
+INSERT [dbo].[DepartmentMaster] ([Id], [Name], [Description], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (1, N'Finance', N'Manages financial transactions and planning', 1, CAST(N'2025-05-20T09:58:54.7836896' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+INSERT [dbo].[DepartmentMaster] ([Id], [Name], [Description], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (2, N'HR', N'Handles recruitment and employee welfare', 1, CAST(N'2025-05-20T09:59:05.7292728' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+INSERT [dbo].[DepartmentMaster] ([Id], [Name], [Description], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (3, N'IT', N'Handles company infrastructure and software', 1, CAST(N'2025-05-20T09:59:17.7198350' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+INSERT [dbo].[DepartmentMaster] ([Id], [Name], [Description], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (4, N'Operations', N'Oversees day-to-day business operations	
+', 1, CAST(N'2025-05-20T09:59:28.3552629' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+SET IDENTITY_INSERT [dbo].[DepartmentMaster] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Employees] ON 
+GO
+INSERT [dbo].[Employees] ([Id], [DepartmentId], [Department], [Name], [FatherName], [Email], [Contact], [Role], [DateOfJoining], [DateOfResign], [BaseSalary], [OTtype], [City], [State], [Pin], [Address], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (24, 3, NULL, N'Sharik', N'Waqar Ahamad', N'test@test.com', N'08931003832', N'Manager', CAST(N'2025-04-01T00:00:00.0000000' AS DateTime2), NULL, CAST(10000 AS Decimal(18, 0)), 1, N'Sonbhadra', N'Uttar Pradesh', N'231207', N'Bari dala', 1, CAST(N'2025-05-18T01:22:13.1105841' AS DateTime2), N'USR0002', CAST(N'2025-05-20T22:01:41.7029520' AS DateTime2), N'USR0002')
+GO
+INSERT [dbo].[Employees] ([Id], [DepartmentId], [Department], [Name], [FatherName], [Email], [Contact], [Role], [DateOfJoining], [DateOfResign], [BaseSalary], [OTtype], [City], [State], [Pin], [Address], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (26, 4, NULL, N'Priya', N'Vajid Ali', N'test@test1.com', N'08931003832', N'Software Engineer', CAST(N'2025-05-01T00:00:00.0000000' AS DateTime2), NULL, CAST(20000 AS Decimal(18, 0)), 2, N'Sonbhadra', N'Uttar Pradesh', N'231207', N'Bari dala', 1, CAST(N'2025-05-18T01:23:00.5047716' AS DateTime2), N'USR0002', CAST(N'2025-05-20T22:03:47.0718615' AS DateTime2), N'USR0002')
+GO
+SET IDENTITY_INSERT [dbo].[Employees] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Holidays] ON 
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (1, CAST(N'2025-01-05' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (2, CAST(N'2025-01-12' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (3, CAST(N'2025-01-19' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (4, CAST(N'2025-01-26' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (5, CAST(N'2025-02-02' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (6, CAST(N'2025-02-09' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (7, CAST(N'2025-02-16' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (8, CAST(N'2025-02-23' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (9, CAST(N'2025-03-02' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (10, CAST(N'2025-03-09' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (11, CAST(N'2025-03-16' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (12, CAST(N'2025-03-23' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (13, CAST(N'2025-03-30' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (14, CAST(N'2025-04-06' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (15, CAST(N'2025-04-13' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (16, CAST(N'2025-04-20' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (17, CAST(N'2025-04-27' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (18, CAST(N'2025-05-04' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (19, CAST(N'2025-05-11' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (20, CAST(N'2025-05-18' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (21, CAST(N'2025-05-25' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (22, CAST(N'2025-06-01' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (23, CAST(N'2025-06-08' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (24, CAST(N'2025-06-15' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (25, CAST(N'2025-06-22' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (26, CAST(N'2025-06-29' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (27, CAST(N'2025-07-06' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (28, CAST(N'2025-07-13' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (29, CAST(N'2025-07-20' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (30, CAST(N'2025-07-27' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (31, CAST(N'2025-08-03' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (32, CAST(N'2025-08-10' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (33, CAST(N'2025-08-17' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (34, CAST(N'2025-08-24' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (35, CAST(N'2025-08-31' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (36, CAST(N'2025-09-07' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (37, CAST(N'2025-09-14' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (38, CAST(N'2025-09-21' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (39, CAST(N'2025-09-28' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (40, CAST(N'2025-10-05' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (41, CAST(N'2025-10-12' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (42, CAST(N'2025-10-19' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (43, CAST(N'2025-10-26' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (44, CAST(N'2025-11-02' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (45, CAST(N'2025-11-09' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (46, CAST(N'2025-11-16' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (47, CAST(N'2025-11-23' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (48, CAST(N'2025-11-30' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (49, CAST(N'2025-12-07' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (50, CAST(N'2025-12-14' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (51, CAST(N'2025-12-21' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (52, CAST(N'2025-12-28' AS Date), N'Sunday Weekend', 1, 0)
+GO
+INSERT [dbo].[Holidays] ([Id], [Date], [Reason], [IsWeekend], [IsCompanyHoliday]) VALUES (53, CAST(N'2025-05-23' AS Date), N'Test', 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[Holidays] OFF
+GO
+SET IDENTITY_INSERT [dbo].[LeaveMaster] ON 
+GO
+INSERT [dbo].[LeaveMaster] ([Id], [DepartmentId], [SickLeaves], [CasualLeaves], [PaidLeaves], [UnpaidLeaves], [Year], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (1, 1, 22, 2, 2, 2, 2025, 1, CAST(N'2025-05-20T10:00:10.3630399' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+INSERT [dbo].[LeaveMaster] ([Id], [DepartmentId], [SickLeaves], [CasualLeaves], [PaidLeaves], [UnpaidLeaves], [Year], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (2, 3, 3, 4, 42, 4, 2025, 1, CAST(N'2025-05-20T10:00:23.8005978' AS DateTime2), N'USR0002', CAST(N'2025-05-20T10:10:57.8894016' AS DateTime2), N'USR0002')
+GO
+SET IDENTITY_INSERT [dbo].[LeaveMaster] OFF
+GO
+SET IDENTITY_INSERT [dbo].[LeaveMasters] ON 
+GO
+INSERT [dbo].[LeaveMasters] ([Id], [Name], [Description], [YearlyLimit], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (1, N'Sick Leave', N'For medical reasons', 20, 1, CAST(N'2025-05-22T01:53:56.130' AS DateTime), N'admin', NULL, NULL)
+GO
+INSERT [dbo].[LeaveMasters] ([Id], [Name], [Description], [YearlyLimit], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (2, N'Casual Leave', N'For personal or casual reasons', 20, 1, CAST(N'2025-05-22T01:53:56.130' AS DateTime), N'admin', NULL, NULL)
+GO
+INSERT [dbo].[LeaveMasters] ([Id], [Name], [Description], [YearlyLimit], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (3, N'Paid Leave', N'Paid vacation leave', 20, 1, CAST(N'2025-05-22T01:53:56.130' AS DateTime), N'admin', NULL, NULL)
+GO
+INSERT [dbo].[LeaveMasters] ([Id], [Name], [Description], [YearlyLimit], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (4, N'Unpaid Leave', N'Leave without salary', 0, 1, CAST(N'2025-05-22T01:53:56.130' AS DateTime), N'admin', NULL, NULL)
+GO
+SET IDENTITY_INSERT [dbo].[LeaveMasters] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Leaves] ON 
+GO
+INSERT [dbo].[Leaves] ([Id], [EmployeeId], [LeaveId], [StartDate], [EndDate], [TotalDays], [Reason], [ApplyDate], [Status], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (1, 24, 2, CAST(N'2025-06-01T00:00:00.0000000' AS DateTime2), CAST(N'2025-06-03T00:00:00.0000000' AS DateTime2), 3, NULL, CAST(N'2025-05-23T00:00:00.0000000' AS DateTime2), N'Pending', 1, CAST(N'2025-05-23T21:20:32.4667101' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+INSERT [dbo].[Leaves] ([Id], [EmployeeId], [LeaveId], [StartDate], [EndDate], [TotalDays], [Reason], [ApplyDate], [Status], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (2, 24, 2, CAST(N'2025-05-03T00:00:00.0000000' AS DateTime2), CAST(N'2025-05-04T00:00:00.0000000' AS DateTime2), 2, N'Family Emergency', CAST(N'2025-04-28T00:00:00.0000000' AS DateTime2), N'Approved', 1, CAST(N'2025-04-28T10:00:00.0000000' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+INSERT [dbo].[Leaves] ([Id], [EmployeeId], [LeaveId], [StartDate], [EndDate], [TotalDays], [Reason], [ApplyDate], [Status], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (3, 24, 3, CAST(N'2025-05-08T00:00:00.0000000' AS DateTime2), CAST(N'2025-05-08T00:00:00.0000000' AS DateTime2), 1, N'Medical Leave', CAST(N'2025-05-06T00:00:00.0000000' AS DateTime2), N'Approved', 1, CAST(N'2025-05-06T12:00:00.0000000' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+INSERT [dbo].[Leaves] ([Id], [EmployeeId], [LeaveId], [StartDate], [EndDate], [TotalDays], [Reason], [ApplyDate], [Status], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (4, 26, 2, CAST(N'2025-05-05T00:00:00.0000000' AS DateTime2), CAST(N'2025-05-05T00:00:00.0000000' AS DateTime2), 1, N'Personal Leave', CAST(N'2025-05-01T00:00:00.0000000' AS DateTime2), N'Approved', 1, CAST(N'2025-05-01T11:00:00.0000000' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+INSERT [dbo].[Leaves] ([Id], [EmployeeId], [LeaveId], [StartDate], [EndDate], [TotalDays], [Reason], [ApplyDate], [Status], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (5, 24, 2, CAST(N'2025-05-03T00:00:00.0000000' AS DateTime2), CAST(N'2025-05-04T00:00:00.0000000' AS DateTime2), 2, N'Family Emergency', CAST(N'2025-04-28T00:00:00.0000000' AS DateTime2), N'Approved', 1, CAST(N'2025-04-28T10:00:00.0000000' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+INSERT [dbo].[Leaves] ([Id], [EmployeeId], [LeaveId], [StartDate], [EndDate], [TotalDays], [Reason], [ApplyDate], [Status], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (6, 24, 3, CAST(N'2025-05-08T00:00:00.0000000' AS DateTime2), CAST(N'2025-05-08T00:00:00.0000000' AS DateTime2), 1, N'Medical Leave', CAST(N'2025-05-06T00:00:00.0000000' AS DateTime2), N'Approved', 1, CAST(N'2025-05-06T12:00:00.0000000' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+INSERT [dbo].[Leaves] ([Id], [EmployeeId], [LeaveId], [StartDate], [EndDate], [TotalDays], [Reason], [ApplyDate], [Status], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (7, 26, 2, CAST(N'2025-05-05T00:00:00.0000000' AS DateTime2), CAST(N'2025-05-05T00:00:00.0000000' AS DateTime2), 1, N'Personal Leave', CAST(N'2025-05-01T00:00:00.0000000' AS DateTime2), N'Approved', 1, CAST(N'2025-05-01T11:00:00.0000000' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+INSERT [dbo].[Leaves] ([Id], [EmployeeId], [LeaveId], [StartDate], [EndDate], [TotalDays], [Reason], [ApplyDate], [Status], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (8, 24, 2, CAST(N'2025-05-03T00:00:00.0000000' AS DateTime2), CAST(N'2025-05-04T00:00:00.0000000' AS DateTime2), 2, N'Family Emergency', CAST(N'2025-04-28T00:00:00.0000000' AS DateTime2), N'Approved', 1, CAST(N'2025-04-28T10:00:00.0000000' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+INSERT [dbo].[Leaves] ([Id], [EmployeeId], [LeaveId], [StartDate], [EndDate], [TotalDays], [Reason], [ApplyDate], [Status], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (9, 24, 3, CAST(N'2025-05-08T00:00:00.0000000' AS DateTime2), CAST(N'2025-05-08T00:00:00.0000000' AS DateTime2), 1, N'Medical Leave', CAST(N'2025-05-06T00:00:00.0000000' AS DateTime2), N'Approved', 1, CAST(N'2025-05-06T12:00:00.0000000' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+INSERT [dbo].[Leaves] ([Id], [EmployeeId], [LeaveId], [StartDate], [EndDate], [TotalDays], [Reason], [ApplyDate], [Status], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (10, 26, 2, CAST(N'2025-05-05T00:00:00.0000000' AS DateTime2), CAST(N'2025-05-05T00:00:00.0000000' AS DateTime2), 1, N'Personal Leave', CAST(N'2025-05-01T00:00:00.0000000' AS DateTime2), N'Approved', 1, CAST(N'2025-05-01T11:00:00.0000000' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+SET IDENTITY_INSERT [dbo].[Leaves] OFF
+GO
+SET IDENTITY_INSERT [dbo].[MarkAttendance] ON 
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (1, 26, CAST(N'2025-05-23' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-23T21:13:04.033' AS DateTime), NULL, NULL)
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (2, 24, CAST(N'2025-05-23' AS Date), N'Leave', 1, N'USR0002', CAST(N'2025-05-23T21:14:06.357' AS DateTime), N'USR0002', CAST(N'2025-05-23T21:20:32.277' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (3, 24, CAST(N'2025-05-01' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-01T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.640' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (4, 24, CAST(N'2025-05-02' AS Date), N'Half Day', 1, N'USR0002', CAST(N'2025-05-02T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.640' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (5, 24, CAST(N'2025-05-03' AS Date), N'Leave', 1, N'USR0002', CAST(N'2025-05-03T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.640' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (6, 24, CAST(N'2025-05-04' AS Date), N'Absent', 1, N'USR0002', CAST(N'2025-05-04T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.640' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (7, 24, CAST(N'2025-05-05' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-05T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.640' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (8, 24, CAST(N'2025-05-06' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-06T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.640' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (9, 24, CAST(N'2025-05-07' AS Date), N'Half Day', 1, N'USR0002', CAST(N'2025-05-07T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.640' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (10, 24, CAST(N'2025-05-08' AS Date), N'Leave', 1, N'USR0002', CAST(N'2025-05-08T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.640' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (11, 24, CAST(N'2025-05-09' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-09T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.640' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (12, 24, CAST(N'2025-05-10' AS Date), N'Absent', 1, N'USR0002', CAST(N'2025-05-10T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.640' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (13, 26, CAST(N'2025-05-01' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-01T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.643' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (14, 26, CAST(N'2025-05-02' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-02T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.643' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (15, 26, CAST(N'2025-05-03' AS Date), N'Half Day', 1, N'USR0002', CAST(N'2025-05-03T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.643' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (16, 26, CAST(N'2025-05-04' AS Date), N'Absent', 1, N'USR0002', CAST(N'2025-05-04T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.643' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (17, 26, CAST(N'2025-05-05' AS Date), N'Leave', 1, N'USR0002', CAST(N'2025-05-05T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.643' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (18, 26, CAST(N'2025-05-06' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-06T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.643' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (19, 26, CAST(N'2025-05-07' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-07T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.643' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (20, 26, CAST(N'2025-05-08' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-08T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.643' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (21, 26, CAST(N'2025-05-09' AS Date), N'Half Day', 1, N'USR0002', CAST(N'2025-05-09T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.643' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (22, 26, CAST(N'2025-05-10' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-10T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:24:50.643' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (23, 24, CAST(N'2025-05-01' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-01T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (24, 24, CAST(N'2025-05-02' AS Date), N'Half Day', 1, N'USR0002', CAST(N'2025-05-02T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (25, 24, CAST(N'2025-05-03' AS Date), N'Leave', 1, N'USR0002', CAST(N'2025-05-03T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (26, 24, CAST(N'2025-05-04' AS Date), N'Absent', 1, N'USR0002', CAST(N'2025-05-04T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (27, 24, CAST(N'2025-05-05' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-05T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (28, 24, CAST(N'2025-05-06' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-06T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (29, 24, CAST(N'2025-05-07' AS Date), N'Half Day', 1, N'USR0002', CAST(N'2025-05-07T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (30, 24, CAST(N'2025-05-08' AS Date), N'Leave', 1, N'USR0002', CAST(N'2025-05-08T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (31, 24, CAST(N'2025-05-09' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-09T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (32, 24, CAST(N'2025-05-10' AS Date), N'Absent', 1, N'USR0002', CAST(N'2025-05-10T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (33, 26, CAST(N'2025-05-01' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-01T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (34, 26, CAST(N'2025-05-02' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-02T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (35, 26, CAST(N'2025-05-03' AS Date), N'Half Day', 1, N'USR0002', CAST(N'2025-05-03T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (36, 26, CAST(N'2025-05-04' AS Date), N'Absent', 1, N'USR0002', CAST(N'2025-05-04T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (37, 26, CAST(N'2025-05-05' AS Date), N'Leave', 1, N'USR0002', CAST(N'2025-05-05T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (38, 26, CAST(N'2025-05-06' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-06T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (39, 26, CAST(N'2025-05-07' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-07T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (40, 26, CAST(N'2025-05-08' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-08T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (41, 26, CAST(N'2025-05-09' AS Date), N'Half Day', 1, N'USR0002', CAST(N'2025-05-09T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+INSERT [dbo].[MarkAttendance] ([Id], [EmployeeId], [AttendanceDate], [AttendanceStatus], [Active], [AddedBy], [AddedOn], [UpdatedBy], [UpdatedOn]) VALUES (42, 26, CAST(N'2025-05-10' AS Date), N'Present', 1, N'USR0002', CAST(N'2025-05-10T09:00:00.000' AS DateTime), NULL, CAST(N'2025-05-23T21:25:36.533' AS DateTime))
+GO
+SET IDENTITY_INSERT [dbo].[MarkAttendance] OFF
+GO
+SET IDENTITY_INSERT [dbo].[OvertimeMaster] ON 
+GO
+INSERT [dbo].[OvertimeMaster] ([Id], [Type], [RatePerHour], [Description], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (1, N'Regular', CAST(100.00 AS Decimal(10, 2)), N'Regular working day overtime', 1, CAST(N'2025-05-17T22:25:19.580' AS DateTime), N'admin', NULL, NULL)
+GO
+INSERT [dbo].[OvertimeMaster] ([Id], [Type], [RatePerHour], [Description], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (2, N'Weekend', CAST(150.00 AS Decimal(10, 2)), N'Saturday/Sunday overtime', 1, CAST(N'2025-05-17T22:25:19.580' AS DateTime), N'admin', NULL, NULL)
+GO
+INSERT [dbo].[OvertimeMaster] ([Id], [Type], [RatePerHour], [Description], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (3, N'Holiday', CAST(200.00 AS Decimal(10, 2)), N'National or company holiday overtime', 1, CAST(N'2025-05-17T22:25:19.580' AS DateTime), N'admin', NULL, NULL)
+GO
+INSERT [dbo].[OvertimeMaster] ([Id], [Type], [RatePerHour], [Description], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (4, N'Test', CAST(100.00 AS Decimal(10, 2)), N'Test', 0, CAST(N'2025-05-17T22:26:00.973' AS DateTime), N'USR0002', CAST(N'2025-05-18T01:21:26.533' AS DateTime), N'USR0002')
+GO
+SET IDENTITY_INSERT [dbo].[OvertimeMaster] OFF
+GO
+SET IDENTITY_INSERT [dbo].[OvertimeRecords] ON 
+GO
+INSERT [dbo].[OvertimeRecords] ([Id], [EmployeeId], [Date], [TotalOvertimeHours], [RatePerHour], [OvertimePay], [AdvancePay], [Bonus], [Deducation], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (1, 24, CAST(N'2025-05-23T00:00:00.0000000' AS DateTime2), CAST(3.00 AS Decimal(5, 2)), NULL, NULL, NULL, NULL, NULL, 1, CAST(N'2025-05-23T21:20:32.3810160' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+INSERT [dbo].[OvertimeRecords] ([Id], [EmployeeId], [Date], [TotalOvertimeHours], [RatePerHour], [OvertimePay], [AdvancePay], [Bonus], [Deducation], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (2, 24, CAST(N'2025-05-05T00:00:00.0000000' AS DateTime2), CAST(3.50 AS Decimal(5, 2)), NULL, NULL, NULL, NULL, NULL, 1, CAST(N'2025-05-05T18:00:00.0000000' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+INSERT [dbo].[OvertimeRecords] ([Id], [EmployeeId], [Date], [TotalOvertimeHours], [RatePerHour], [OvertimePay], [AdvancePay], [Bonus], [Deducation], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (3, 26, CAST(N'2025-05-07T00:00:00.0000000' AS DateTime2), CAST(2.00 AS Decimal(5, 2)), NULL, NULL, NULL, NULL, NULL, 1, CAST(N'2025-05-07T18:00:00.0000000' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+INSERT [dbo].[OvertimeRecords] ([Id], [EmployeeId], [Date], [TotalOvertimeHours], [RatePerHour], [OvertimePay], [AdvancePay], [Bonus], [Deducation], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (4, 24, CAST(N'2025-05-05T00:00:00.0000000' AS DateTime2), CAST(3.50 AS Decimal(5, 2)), NULL, NULL, NULL, NULL, NULL, 1, CAST(N'2025-05-05T18:00:00.0000000' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+INSERT [dbo].[OvertimeRecords] ([Id], [EmployeeId], [Date], [TotalOvertimeHours], [RatePerHour], [OvertimePay], [AdvancePay], [Bonus], [Deducation], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy]) VALUES (5, 26, CAST(N'2025-05-07T00:00:00.0000000' AS DateTime2), CAST(2.00 AS Decimal(5, 2)), NULL, NULL, NULL, NULL, NULL, 1, CAST(N'2025-05-07T18:00:00.0000000' AS DateTime2), N'USR0002', NULL, NULL)
+GO
+SET IDENTITY_INSERT [dbo].[OvertimeRecords] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Users] ON 
+GO
+INSERT [dbo].[Users] ([Id], [UserId], [Username], [Password], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy], [Role]) VALUES (1, N'U001', N'john.doe', N'12345678', 0, CAST(N'2025-05-04T00:02:59.733' AS DateTime), N'admin', CAST(N'2025-05-07T00:11:57.450' AS DateTime), N'U001', N'--select--')
+GO
+INSERT [dbo].[Users] ([Id], [UserId], [Username], [Password], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy], [Role]) VALUES (2, N'USR0002', N'sharik', N'123123', 1, CAST(N'2025-05-04T00:07:00.293' AS DateTime), N'U001', CAST(N'2025-05-04T00:07:00.293' AS DateTime), N'U001', N'1')
+GO
+INSERT [dbo].[Users] ([Id], [UserId], [Username], [Password], [Active], [AddedOn], [AddedBy], [UpdatedOn], [UpdatedBy], [Role]) VALUES (3, N'USR0003', N'Ayub', N'89310032', 1, CAST(N'2025-05-07T00:11:32.773' AS DateTime), N'U001', CAST(N'2025-05-07T00:11:32.773' AS DateTime), N'U001', N'2')
+GO
+SET IDENTITY_INSERT [dbo].[Users] OFF
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ__Employee__A9D105346D569084]    Script Date: 23-05-2025 21:31:48 ******/
+ALTER TABLE [dbo].[Employees] ADD  CONSTRAINT [UQ__Employee__A9D105346D569084] UNIQUE NONCLUSTERED 
+(
+	[Email] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Attendance] ADD  DEFAULT ((1)) FOR [Active]
+GO
+ALTER TABLE [dbo].[Attendance] ADD  DEFAULT (getdate()) FOR [AddedOn]
+GO
+ALTER TABLE [dbo].[Attendance] ADD  DEFAULT (getdate()) FOR [UpdatedOn]
+GO
+ALTER TABLE [dbo].[EmployeeLeave] ADD  CONSTRAINT [DF__EmployeeL__Activ__7FB5F314]  DEFAULT ((1)) FOR [Active]
+GO
+ALTER TABLE [dbo].[EmployeeLeave] ADD  CONSTRAINT [DF__EmployeeL__Added__00AA174D]  DEFAULT (getdate()) FOR [AddedOn]
+GO
+ALTER TABLE [dbo].[Employees] ADD  CONSTRAINT [DF__Employees__Activ__76969D2E]  DEFAULT ((1)) FOR [Active]
+GO
+ALTER TABLE [dbo].[Employees] ADD  CONSTRAINT [DF__Employees__Added__778AC167]  DEFAULT (getdate()) FOR [AddedOn]
+GO
+ALTER TABLE [dbo].[Employees] ADD  CONSTRAINT [DF__Employees__Updat__787EE5A0]  DEFAULT (getdate()) FOR [UpdatedOn]
+GO
+ALTER TABLE [dbo].[LeaveRequests] ADD  DEFAULT (getdate()) FOR [AppliedOn]
+GO
+ALTER TABLE [dbo].[LeaveRequests] ADD  DEFAULT ((1)) FOR [Active]
+GO
+ALTER TABLE [dbo].[LeaveRequests] ADD  DEFAULT (getdate()) FOR [AddedOn]
+GO
+ALTER TABLE [dbo].[LeaveRequests] ADD  DEFAULT (getdate()) FOR [UpdatedOn]
+GO
+ALTER TABLE [dbo].[Leaves] ADD  CONSTRAINT [DF__Leaves__Active__7AF13DF7]  DEFAULT ((1)) FOR [Active]
+GO
+ALTER TABLE [dbo].[MarkAttendance] ADD  CONSTRAINT [DF__MarkAtten__Activ__5224328E]  DEFAULT ((1)) FOR [Active]
+GO
+ALTER TABLE [dbo].[MarkAttendance] ADD  CONSTRAINT [DF__MarkAtten__Added__531856C7]  DEFAULT (getdate()) FOR [AddedOn]
+GO
+ALTER TABLE [dbo].[MarkAttendance] ADD  CONSTRAINT [DF__MarkAtten__Updat__540C7B00]  DEFAULT (getdate()) FOR [UpdatedOn]
+GO
+ALTER TABLE [dbo].[OvertimeMaster] ADD  DEFAULT ((1)) FOR [Active]
+GO
+ALTER TABLE [dbo].[OvertimeMaster] ADD  DEFAULT (getdate()) FOR [AddedOn]
+GO
+ALTER TABLE [dbo].[Salaries] ADD  CONSTRAINT [DF__Salaries__Active__54CB950F]  DEFAULT ((1)) FOR [Active]
+GO
+ALTER TABLE [dbo].[Salaries] ADD  CONSTRAINT [DF__Salaries__AddedO__55BFB948]  DEFAULT (getdate()) FOR [AddedOn]
+GO
+ALTER TABLE [dbo].[Attendance]  WITH CHECK ADD  CONSTRAINT [FK__Attendanc__Emplo__7B5B524B] FOREIGN KEY([EmployeeId])
+REFERENCES [dbo].[Employees] ([Id])
+GO
+ALTER TABLE [dbo].[Attendance] CHECK CONSTRAINT [FK__Attendanc__Emplo__7B5B524B]
+GO
+ALTER TABLE [dbo].[Attendance]  WITH CHECK ADD CHECK  (([Status]='Half-Day' OR [Status]='Absent' OR [Status]='Late' OR [Status]='Present'))
+GO
+/****** Object:  StoredProcedure [dbo].[sp_GetAttendanceDataTable]    Script Date: 23-05-2025 21:31:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[sp_GetAttendanceDataTable]
+    @Start INT,
+    @Length INT,
+    @SearchValue NVARCHAR(100),
+    @StartDate NVARCHAR(50) = NULL,  -- ✅ Now STRING instead of DATE
+    @EndDate NVARCHAR(50) = NULL     -- ✅ Now STRING instead of DATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Convert valid date strings to DATE type
+    DECLARE @ConvertedStartDate DATE = NULL;
+    DECLARE @ConvertedEndDate DATE = NULL;
+
+    IF @StartDate IS NOT NULL AND ISDATE(@StartDate) = 1
+        SET @ConvertedStartDate = CAST(@StartDate AS DATE);
+    
+    IF @EndDate IS NOT NULL AND ISDATE(@EndDate) = 1
+        SET @ConvertedEndDate = CAST(@EndDate AS DATE);
+
+    -- Temp table for filtered results
+    CREATE TABLE #FilteredResults
+    (
+        Id INT,
+        Name NVARCHAR(255),
+        CheckInTime NVARCHAR(50),
+        CheckOutTime NVARCHAR(50),
+        WorkHours DECIMAL(5,2),
+        Date NVARCHAR(50),
+        Status NVARCHAR(100),
+        TotalCount INT
+    );
+
+    -- Insert filtered and counted data with proper formatting
+    INSERT INTO #FilteredResults
+    SELECT 
+        a.Id,
+        m.Name,
+        FORMAT(CAST(a.CheckInTime AS DATETIME), 'hh:mm tt') AS CheckInTime,
+        FORMAT(CAST(a.CheckOutTime AS DATETIME), 'hh:mm tt') AS CheckOutTime,
+        a.WorkHours,
+        FORMAT(a.Date, 'dd-MM-yyyy') AS Date, 
+        a.Status,
+        COUNT(*) OVER() AS TotalCount
+    FROM Attendance a
+    JOIN Employees m ON a.EmployeeId = m.Id
+    WHERE a.Active = 1
+      AND (
+          @SearchValue IS NULL OR @SearchValue = '' OR
+          CAST(a.Id AS NVARCHAR) LIKE '%' + @SearchValue + '%' OR
+          m.Name LIKE '%' + @SearchValue + '%' OR
+          a.Status LIKE '%' + @SearchValue + '%'
+      )
+      -- ✅ Apply date filtering dynamically
+      AND (
+          (@ConvertedStartDate IS NULL AND @ConvertedEndDate IS NULL) OR
+          (@ConvertedStartDate IS NOT NULL AND @ConvertedEndDate IS NULL AND a.Date >= @ConvertedStartDate) OR
+          (@ConvertedStartDate IS NULL AND @ConvertedEndDate IS NOT NULL AND a.Date <= @ConvertedEndDate) OR
+          (@ConvertedStartDate IS NOT NULL AND @ConvertedEndDate IS NOT NULL AND a.Date BETWEEN @ConvertedStartDate AND @ConvertedEndDate)
+      );
+
+    -- Return paginated result
+    SELECT * FROM #FilteredResults
+    ORDER BY Id DESC
+    OFFSET @Start ROWS FETCH NEXT @Length ROWS ONLY;
+
+    DROP TABLE #FilteredResults;
+END;
+GO
